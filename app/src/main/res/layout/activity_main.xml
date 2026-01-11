@@ -17,6 +17,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+<<<<<<< HEAD
     <TextView
         android:id="@+id/textView"
         android:layout_width="80dp"
@@ -24,5 +25,14 @@
         android:text="Aşk Adam MertUruc"
         tools:layout_editor_absoluteX="176dp"
         tools:layout_editor_absoluteY="261dp" />
+=======
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button"
+        tools:layout_editor_absoluteX="32dp"
+        tools:layout_editor_absoluteY="114dp" />
+>>>>>>> 9e89009939005a03a1f0d628c54db8dcafe91388
 
 </androidx.constraintlayout.widget.ConstraintLayout>
