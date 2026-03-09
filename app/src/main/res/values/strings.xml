@@ -1,3 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">MindLyric0</string>
+    <string name="app_name">MindLyric</string>
+
+    <!-- Login -->
+    <string name="login_tagline">Duygular&#305;n&#305; kelimelerle ifade et</string>
+    <string name="login_welcome">Ho&#351; Geldin &#128075;</string>
+    <string name="login_subtitle">Hesab&#305;na giri&#351; yap</string>
+    <string name="login_hint_email">E-posta</string>
+    <string name="login_hint_password">&#350;ifre</string>
+    <string name="login_remember_me">Beni Hat&#305;rla</string>
+    <string name="login_btn">Giri&#351; Yap</string>
+    <string name="login_no_account">Hesab&#305;n yok mu? </string>
+    <string name="login_register_link">Kay&#305;t Ol</string>
+
+    <!-- Register -->
+    <string name="register_tagline">Yeni hesap olu&#351;tur</string>
+    <string name="register_welcome">Hesap Olu&#351;tur &#10024;</string>
+    <string name="register_subtitle">Birka&#231; ad&#305;mda haz&#305;rs&#305;n</string>
+    <string name="register_hint_username">Kullan&#305;c&#305; ad&#305;</string>
+    <string name="register_hint_password">&#350;ifre (en az 6 karakter)</string>
+    <string name="register_btn">Kay&#305;t Ol</string>
+    <string name="register_have_account">Zaten hesab&#305;n var m&#305;? </string>
+    <string name="register_login_link">Giri&#351; Yap</string>
+
+    <!-- Main / Journal -->
+    <string name="main_title">G&#252;nl&#252;&#287;&#252;m &#128214;</string>
+    <string name="main_logout">&#199;&#305;k&#305;&#351;</string>
+    <string name="main_hint_journal">Bug&#252;n nas&#305;l ge&#231;ti?</string>
+    <string name="main_save">Kaydet</string>
+    <string name="main_delete_title">Girdiyi sil</string>
+    <string name="main_delete_message">Bu g&#252;nl&#252;k kayd&#305; kal&#305;c&#305; olarak silinecek. Emin misin?</string>
+    <string name="main_delete_confirm">Sil</string>
+    <string name="main_delete_cancel">&#304;ptal</string>
+    <string name="main_toast_empty">Bir &#351;eyler yaz &#246;nce &#128221;</string>
+    <string name="main_delete_hint">Silmek i&#231;in uzun bas</string>
+
+    <!-- Mood chips -->
+    <string name="mood_happy">&#128522; Mutlu</string>
+    <string name="mood_sad">&#128546; &#220;zg&#252;n</string>
+    <string name="mood_neutral">&#128528; N&#246;tr</string>
+    <string name="mood_angry">&#128548; Sinirli</string>
+    <string name="mood_tired">&#128564; Yorgun</string>
 </resources>

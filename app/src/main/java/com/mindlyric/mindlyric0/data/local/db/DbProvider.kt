@@ -14,7 +14,7 @@ object DbProvider {
                 context.applicationContext,
                 MindLyricDatabase::class.java,
                 "mindlyric.db"
-            ).build().also { INSTANCE = it }
+            ).fallbackToDestructiveMigration().build().also { INSTANCE = it }
         }
     }
 }

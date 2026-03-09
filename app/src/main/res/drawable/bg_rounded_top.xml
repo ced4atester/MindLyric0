@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Form kartının arka planı: beyaz, sadece üst köşeleri yuvarlatılmış.
+     Bu sayede renkli header'ın üzerine oturan "kart" görünümü elde edilir. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/white" />
+    <corners
+        android:topLeftRadius="32dp"
+        android:topRightRadius="32dp" />
+</shape>

@@ -2,4 +2,11 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- MindLyric marka renkleri -->
+    <color name="brand_primary">#6C63FF</color>       <!-- Ana mor-indigo -->
+    <color name="brand_primary_dark">#4B44CC</color>  <!-- Koyu ton (gradient / durum çubuğu) -->
+    <color name="brand_surface">#F4F3FF</color>       <!-- Çok açık mor-beyaz arka plan -->
+    <color name="brand_on_primary">#FFFFFF</color>    <!-- Primary üzerindeki metin rengi -->
+    <color name="brand_text_secondary">#757575</color><!-- İkincil metin rengi (açıklama) -->
 </resources>

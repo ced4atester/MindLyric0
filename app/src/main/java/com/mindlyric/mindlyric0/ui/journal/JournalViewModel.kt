@@ -13,7 +13,11 @@ class JournalViewModel(
     private val repository: JournalRepository
 ) : ViewModel() {
 
-    // UI bununla DB'deki entry listesini canlı izler
+    /**
+     * Veritabanındaki tüm günlük girdilerini canlı olarak izler.
+     * StateFlow: Activity/Fragment yaşam döngüsüne duyarlı.
+     * WhileSubscribed(5000): ekran kapandıktan 5 saniye sonra akış durur → kaynak tasarrufu.
+     */
     val entries: StateFlow<List<JournalEntryEntity>> =
         repository.observeAll()
             .stateIn(
@@ -22,19 +26,25 @@ class JournalViewModel(
                 initialValue = emptyList()
             )
 
-    fun addDummyEntry() {
+    /**
+     * Yeni günlük girdisi ekler.
+     * @param text      Kullanıcının yazdığı günlük metni
+     * @param moodLabel Seçilen ruh hali etiketi; seçilmezse null
+     */
+    fun addEntry(text: String, moodLabel: String?) {
         viewModelScope.launch {
             repository.insert(
                 JournalEntryEntity(
-                    createdAt = System.currentTimeMillis(),
-                    text = "MVVM üzerinden eklendi ✅",
-                    moodLabel = "Mutlu",
-                    sentimentScore = 0.85f
+                    createdAt = System.currentTimeMillis(), // kayıt anı (epoch ms)
+                    text = text,
+                    moodLabel = moodLabel,
+                    sentimentScore = null // ileride duygu analizi eklenebilir
                 )
             )
         }
     }
 
+    // Girdiyi veritabanından kalıcı olarak siler
     fun deleteEntry(entry: JournalEntryEntity) {
         viewModelScope.launch {
             repository.delete(entry)
