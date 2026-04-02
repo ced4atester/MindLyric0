@@ -33,6 +33,7 @@ class LoginActivity : AppCompatActivity() {
         // ---- Oturum kalıcılığı kontrolü ----
         // "Beni Hatırla" ile daha önce giriş yapıldıysa userId SharedPreferences'ta saklanır.
         // Uygulama açılırken kontrol edilir; kayıtlı userId varsa login ekranı gösterilmez.
+
         val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val savedUserId = prefs.getInt(KEY_USER_ID, -1)
         if (savedUserId != -1) {
