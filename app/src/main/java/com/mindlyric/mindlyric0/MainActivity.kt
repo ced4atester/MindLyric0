@@ -31,10 +31,25 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // ---- ViewModel kurulumu ----
+        // SharedPreferences'tan giriş yapan kullanıcının id'sini oku
+        // Bu id, LoginActivity tarafından giriş başarılı olunca kaydedilmişti
+        val prefs = getSharedPreferences(LoginActivity.PREFS_NAME, Context.MODE_PRIVATE)
+        val userId = prefs.getLong(LoginActivity.KEY_USER_ID, -1L)
+
+        // Geçerli bir kullanıcı yoksa (id = -1) → Login ekranına gönder
+        if (userId == -1L) {
+            startActivity(
+                Intent(this, LoginActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                }
+            )
+            return
+        }
+
+        // ---- ViewModel kurulumu — userId ile birlikte ----
         val repository = JournalRepository(DbProvider.get(this).journalDao())
         viewModel = ViewModelProvider(
-            this, JournalViewModelFactory(repository)
+            this, JournalViewModelFactory(repository, userId)
         )[JournalViewModel::class.java]
 
         // ---- Çıkış butonu ----

@@ -35,8 +35,9 @@ class LoginActivity : AppCompatActivity() {
         // Uygulama açılırken kontrol edilir; kayıtlı userId varsa login ekranı gösterilmez.
 
         val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        val savedUserId = prefs.getInt(KEY_USER_ID, -1)
-        if (savedUserId != -1) {
+        // getLong: userId Long tipinde, Int kullanmak değer kaybına yol açar
+        val savedUserId = prefs.getLong(KEY_USER_ID, -1L)
+        if (savedUserId != -1L) {
             navigateToMain(savedUserId)
             return // setContentView çağrılmadan activity bitirilir
         }
@@ -92,7 +93,7 @@ class LoginActivity : AppCompatActivity() {
 
                     // "Beni Hatırla" seçildiyse userId'yi SharedPreferences'a kaydet
                     if (cbRememberMe.isChecked) {
-                        prefs.edit().putInt(KEY_USER_ID, state.userId).apply()
+                        prefs.edit().putLong(KEY_USER_ID, state.userId).apply()
                     }
 
                     navigateToMain(state.userId)
@@ -133,9 +134,9 @@ class LoginActivity : AppCompatActivity() {
     }
 
     // MainActivity'ye geçiş ve bu Activity'yi yığından kaldır
-    private fun navigateToMain(userId: Int) {
+    private fun navigateToMain(userId: Long) {
         startActivity(Intent(this, MainActivity::class.java).apply {
-            putExtra("USER_ID", userId)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         })
         finish()
     }

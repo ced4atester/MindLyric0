@@ -26,7 +26,8 @@ class UserRepository(private val userDao: UserDao) {
             UserEntity(username = username, email = email, password = hashedPassword)
         )
         // insertUser'ın döndürdüğü Long rowId = autoGenerate id ile aynıdır
-        return RegisterResult.Success(userId = newId.toInt())
+        // newId zaten Long; toInt() kaldırıldı — tutarlılık için Long kullanıyoruz
+        return RegisterResult.Success(userId = newId)
     }
 
     /**
@@ -46,12 +47,12 @@ class UserRepository(private val userDao: UserDao) {
 
 // Kayıt işleminin olası sonuçları
 sealed class RegisterResult {
-    data class Success(val userId: Int) : RegisterResult()
+    data class Success(val userId: Long) : RegisterResult()  // Long: Room id tipiyle uyumlu
     object EmailTaken : RegisterResult()
 }
 
 // Giriş işleminin olası sonuçları
 sealed class LoginResult {
-    data class Success(val userId: Int) : LoginResult()
+    data class Success(val userId: Long) : LoginResult()  // Long: Room id tipiyle uyumlu
     object InvalidCredentials : LoginResult()
 }

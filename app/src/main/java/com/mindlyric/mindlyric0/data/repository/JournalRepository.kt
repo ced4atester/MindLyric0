@@ -7,12 +7,13 @@ import kotlinx.coroutines.flow.Flow
 class JournalRepository(
     private val dao: JournalDao
 ) {
-    // DB'deki tüm journal kayıtlarını canlı şekilde izler (liste ekranı için ideal)
-    fun observeAll(): Flow<List<JournalEntryEntity>> = dao.observeAll()
+    // Sadece belirli kullanıcıya ait günlükleri canlı olarak izler
+    // Flow: veritabanı değişince liste otomatik güncellenir
+    fun observeByUser(userId: Long): Flow<List<JournalEntryEntity>> = dao.observeByUser(userId)
 
-    // Yeni kayıt ekler
+    // Yeni günlük kaydı ekler
     suspend fun insert(entry: JournalEntryEntity): Long = dao.insert(entry)
 
-    // Kayıt siler
+    // Günlük kaydını siler
     suspend fun delete(entry: JournalEntryEntity) = dao.delete(entry)
 }

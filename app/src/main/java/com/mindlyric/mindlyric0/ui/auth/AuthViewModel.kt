@@ -97,8 +97,8 @@ enum class ValidationField { EMAIL, PASSWORD, USERNAME, GENERAL }
 sealed class AuthState {
     object Idle : AuthState()
     object Loading : AuthState()
-    data class LoginSuccess(val userId: Int) : AuthState()
-    data class RegisterSuccess(val userId: Int) : AuthState()
+    data class LoginSuccess(val userId: Long) : AuthState()   // Long: Room id tipiyle uyumlu
+    data class RegisterSuccess(val userId: Long) : AuthState() // Long: Room id tipiyle uyumlu
     data class ValidationError(val message: String, val field: ValidationField) : AuthState()
     data class Error(val message: String, val field: ValidationField) : AuthState()
 }

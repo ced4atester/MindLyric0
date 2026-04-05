@@ -9,13 +9,13 @@ import com.mindlyric.mindlyric0.data.local.entity.UserEntity
 
 /**
  * Room veritabanı ana sınıfı.
- * version = 2: users tablosuna email unique index eklendi (şema değişikliği).
- * exportSchema = false: geliştirme aşamasında kapalı; production'da true yapıp
- *   migration yazılmalı ve ksp { arg("room.schemaLocation", ...) } eklenmeli.
+ * version = 3: journal_entries tablosuna userId sütunu eklendi.
+ *   (v2 → v3: günlükler artık kullanıcıya özel)
+ * fallbackToDestructiveMigration kullanıldığı için uygulama silinip yeniden kurulmalı.
  */
 @Database(
     entities = [JournalEntryEntity::class, UserEntity::class],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 abstract class MindLyricDatabase : RoomDatabase() {

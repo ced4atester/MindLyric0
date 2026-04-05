@@ -75,11 +75,11 @@ class RegisterActivity : AppCompatActivity() {
                     // Kayıt başarılı olduğunda userId elimizde; direkt giriş yaptır.
                     // Kullanıcıyı tekrar login ekranına yönlendirmek yerine
                     // SharedPreferences'a kaydedip MainActivity'e geç (auto-login).
+                    // userId'yi SharedPreferences'a Long olarak kaydet (auto-login)
                     val prefs = getSharedPreferences(LoginActivity.PREFS_NAME, Context.MODE_PRIVATE)
-                    prefs.edit().putInt(LoginActivity.KEY_USER_ID, state.userId).apply()
+                    prefs.edit().putLong(LoginActivity.KEY_USER_ID, state.userId).apply()
 
                     startActivity(Intent(this, MainActivity::class.java).apply {
-                        putExtra("USER_ID", state.userId)
                         // Geri tuşuna basıldığında login/register ekranına dönülmesin
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     })

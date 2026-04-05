@@ -9,42 +9,38 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+// ViewModel artık hangi kullanıcının günlüklerini göstereceğini bilmek için userId alıyor
 class JournalViewModel(
-    private val repository: JournalRepository
+    private val repository: JournalRepository,
+    private val userId: Long       // giriş yapan kullanıcının id'si
 ) : ViewModel() {
 
-    /**
-     * Veritabanındaki tüm günlük girdilerini canlı olarak izler.
-     * StateFlow: Activity/Fragment yaşam döngüsüne duyarlı.
-     * WhileSubscribed(5000): ekran kapandıktan 5 saniye sonra akış durur → kaynak tasarrufu.
-     */
+    // Sadece bu kullanıcıya ait günlükleri canlı olarak dinler
+    // WhileSubscribed(5000): ekran kapandıktan 5 sn sonra dinlemeyi durdurur (pil tasarrufu)
     val entries: StateFlow<List<JournalEntryEntity>> =
-        repository.observeAll()
+        repository.observeByUser(userId)
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000),
                 initialValue = emptyList()
             )
 
-    /**
-     * Yeni günlük girdisi ekler.
-     * @param text      Kullanıcının yazdığı günlük metni
-     * @param moodLabel Seçilen ruh hali etiketi; seçilmezse null
-     */
+    // Yeni günlük kaydı ekler — userId otomatik olarak eklenir
     fun addEntry(text: String, moodLabel: String?) {
         viewModelScope.launch {
             repository.insert(
                 JournalEntryEntity(
-                    createdAt = System.currentTimeMillis(), // kayıt anı (epoch ms)
-                    text = text,
-                    moodLabel = moodLabel,
-                    sentimentScore = null // ileride duygu analizi eklenebilir
+                    userId = userId,                        // hangi kullanıcıya ait
+                    createdAt = System.currentTimeMillis(), // ne zaman yazıldı
+                    text = text,                            // günlük metni
+                    moodLabel = moodLabel,                  // ruh hali (seçilmediyse null)
+                    sentimentScore = null                   // duygu skoru — ileride eklenecek
                 )
             )
         }
     }
 
-    // Girdiyi veritabanından kalıcı olarak siler
+    // Seçilen günlük kaydını veritabanından siler
     fun deleteEntry(entry: JournalEntryEntity) {
         viewModelScope.launch {
             repository.delete(entry)
