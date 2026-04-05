@@ -33,4 +33,9 @@ interface JournalDao {
     // Claude API'den gelen duygu skorunu belirli kayıda yazar
     @Query("UPDATE journal_entries SET sentimentScore = :score WHERE id = :entryId")
     suspend fun updateSentimentScore(entryId: Long, score: Float)
+
+    // Son 7 günün günlüklerini getirir — grafik için kullanılır
+    // since: 7 gün öncesinin timestamp'i
+    @Query("SELECT * FROM journal_entries WHERE userId = :userId AND createdAt >= :since AND sentimentScore IS NOT NULL ORDER BY createdAt ASC")
+    suspend fun getEntriesSince(userId: Long, since: Long): List<JournalEntryEntity>
 }

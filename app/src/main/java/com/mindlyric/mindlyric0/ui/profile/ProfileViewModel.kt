@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mindlyric.mindlyric0.data.local.entity.JournalEntryEntity
 import com.mindlyric.mindlyric0.data.local.entity.UserEntity
 import com.mindlyric.mindlyric0.data.repository.ChangePasswordResult
 import com.mindlyric.mindlyric0.data.repository.JournalRepository
@@ -24,6 +25,10 @@ class ProfileViewModel(
     private val _topMood = MutableLiveData<String?>()
     val topMood: LiveData<String?> = _topMood
 
+    // Son 7 günün günlük verileri — grafik için kullanılır
+    private val _trendEntries = MutableLiveData<List<JournalEntryEntity>>(emptyList())
+    val trendEntries: LiveData<List<JournalEntryEntity>> = _trendEntries
+
     // Kullanıcı bilgilerini tutar — Activity bu LiveData'yı gözlemler
     private val _user = MutableLiveData<UserEntity?>()
     val user: LiveData<UserEntity?> = _user
@@ -36,6 +41,7 @@ class ProfileViewModel(
     init {
         loadUser()
         loadStats()
+        loadTrend()
     }
 
     // Veritabanından kullanıcı bilgilerini çeker
@@ -50,6 +56,15 @@ class ProfileViewModel(
         viewModelScope.launch {
             _journalCount.value = journalRepository.getJournalCount(userId)
             _topMood.value = journalRepository.getTopMood(userId)
+        }
+    }
+
+    // Son 7 günün duygu skorlu günlüklerini yükler
+    fun loadTrend() {
+        viewModelScope.launch {
+            // 7 gün öncesinin millisaniye cinsinden timestamp'i
+            val sevenDaysAgo = System.currentTimeMillis() - (7 * 24 * 60 * 60 * 1000L)
+            _trendEntries.value = journalRepository.getEntriesSince(userId, sevenDaysAgo)
         }
     }
 

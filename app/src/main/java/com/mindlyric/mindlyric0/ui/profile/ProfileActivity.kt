@@ -3,6 +3,7 @@ package com.mindlyric.mindlyric0.ui.profile
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,12 +13,21 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.formatter.ValueFormatter
 import com.google.android.material.textfield.TextInputEditText
 import com.mindlyric.mindlyric0.R
 import com.mindlyric.mindlyric0.data.local.db.DbProvider
 import com.mindlyric.mindlyric0.data.repository.JournalRepository
 import com.mindlyric.mindlyric0.data.repository.UserRepository
 import com.mindlyric.mindlyric0.ui.auth.LoginActivity
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class ProfileActivity : AppCompatActivity() {
 
@@ -95,6 +105,16 @@ class ProfileActivity : AppCompatActivity() {
             tvTopMood.text = mood ?: getString(R.string.profile_no_mood)
         }
 
+        // ---- Trend grafiğini gözlemle ----
+        val moodChart = findViewById<BarChart>(R.id.moodChart)
+        viewModel.trendEntries.observe(this) { entries ->
+            setupMoodChart(moodChart, entries.mapNotNull { entry ->
+                val score = entry.sentimentScore ?: return@mapNotNull null
+                Pair(entry.createdAt, score)
+            })
+        }
+
+
         // ---- Avatar seçme ----
         btnChooseAvatar.setOnClickListener {
             showAvatarDialog()
@@ -138,6 +158,69 @@ class ProfileActivity : AppCompatActivity() {
                 else -> { /* Idle ve Loading için bir şey yapma */ }
             }
         }
+    }
+
+    // Son 7 günün duygu skorlarını çubuk grafiğe yükler
+    private fun setupMoodChart(chart: BarChart, data: List<Pair<Long, Float>>) {
+        if (data.isEmpty()) {
+            chart.setNoDataText("Henüz analiz edilmiş günlük yok")
+            chart.invalidate()
+            return
+        }
+
+        // Her çubuk: X = sıra indeksi, Y = skor (1-10)
+        val barEntries = data.mapIndexed { index, (_, score) ->
+            BarEntry(index.toFloat(), score)
+        }
+
+        // Skora göre renk belirle: 1-3 kırmızı, 4-6 sarı, 7-10 yeşil
+        val colors = data.map { (_, score) ->
+            when {
+                score <= 3f -> Color.parseColor("#EF5350") // kırmızı — negatif
+                score <= 6f -> Color.parseColor("#FFA726") // turuncu — nötr
+                else        -> Color.parseColor("#66BB6A") // yeşil — pozitif
+            }
+        }
+
+        val dataSet = BarDataSet(barEntries, "").apply {
+            setColors(colors)
+            setDrawValues(true)       // çubukların üstüne skor yaz
+            valueTextSize = 11f
+            // Skoru tam sayı olarak göster (7.0 yerine 7)
+            valueFormatter = object : ValueFormatter() {
+                override fun getFormattedValue(value: Float) = value.toInt().toString()
+            }
+        }
+
+        // X eksenine tarih yaz
+        val dateFormatter = SimpleDateFormat("dd/MM", Locale("tr"))
+        chart.xAxis.apply {
+            valueFormatter = object : ValueFormatter() {
+                override fun getFormattedValue(value: Float): String {
+                    val index = value.toInt()
+                    return if (index in data.indices) {
+                        dateFormatter.format(Date(data[index].first))
+                    } else ""
+                }
+            }
+            position = XAxis.XAxisPosition.BOTTOM
+            granularity = 1f
+            setDrawGridLines(false)
+        }
+
+        // Y eksenini 0-10 aralığına sabitle
+        chart.axisLeft.apply {
+            axisMinimum = 0f
+            axisMaximum = 10f
+            granularity = 1f
+        }
+        chart.axisRight.isEnabled = false
+        chart.description.isEnabled = false
+        chart.legend.isEnabled = false
+        chart.setFitBars(true)
+        chart.data = BarData(dataSet)
+        chart.animateY(600)
+        chart.invalidate()
     }
 
     // 20 avatar görseli gösteren dialog

@@ -138,6 +138,39 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Son 7 Gün Trend Grafiği kartı -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="2dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Son 7 Gün Duygu Trendi"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/brand_text_secondary"
+                    android:layout_marginBottom="8dp" />
+
+                <!-- MPAndroidChart çubuk grafiği -->
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/moodChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp" />
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
         <!-- Avatar seç butonu -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnChooseAvatar"

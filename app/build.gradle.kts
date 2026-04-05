@@ -71,4 +71,6 @@ dependencies {
     implementation(libs.lifecycle.viewmodel.ktx)
     // Claude API ile HTTP isteği yapmak için OkHttp
     implementation(libs.okhttp)
+    // Ruh hali trend grafiği için MPAndroidChart
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 }

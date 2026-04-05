@@ -26,4 +26,8 @@ class JournalRepository(
     // Claude API'den gelen duygu skorunu belirli kayıda günceller
     suspend fun updateSentimentScore(entryId: Long, score: Float) =
         dao.updateSentimentScore(entryId, score)
+
+    // Son 7 günün skorlu günlüklerini döner (grafik için)
+    suspend fun getEntriesSince(userId: Long, since: Long) =
+        dao.getEntriesSince(userId, since)
 }
