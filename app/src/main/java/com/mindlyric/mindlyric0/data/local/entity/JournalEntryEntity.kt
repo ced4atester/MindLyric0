@@ -24,6 +24,9 @@ data class JournalEntryEntity(
     // Seçilen ruh hali etiketi (ör: "Mutlu", "Üzgün") — seçilmezse null
     val moodLabel: String?,
 
-    // Duygu analizi skoru — ileride kullanılacak, şimdilik null
-    val sentimentScore: Float?
+    // Duygu analizi skoru — Claude API tarafından 1-10 arası doldurulur
+    val sentimentScore: Float?,
+
+    // Claude'un skora göre ürettiği kişisel öneri mesajı — analiz sonrası doldurulur
+    val recommendation: String? = null
 )

@@ -27,6 +27,10 @@ class JournalRepository(
     suspend fun updateSentimentScore(entryId: Long, score: Float) =
         dao.updateSentimentScore(entryId, score)
 
+    // Claude'un ürettiği öneri metnini belirli kayıda günceller
+    suspend fun updateRecommendation(entryId: Long, recommendation: String) =
+        dao.updateRecommendation(entryId, recommendation)
+
     // Son 7 günün skorlu günlüklerini döner (grafik için)
     suspend fun getEntriesSince(userId: Long, since: Long) =
         dao.getEntriesSince(userId, since)

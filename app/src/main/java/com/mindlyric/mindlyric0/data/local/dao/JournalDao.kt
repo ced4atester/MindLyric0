@@ -34,6 +34,10 @@ interface JournalDao {
     @Query("UPDATE journal_entries SET sentimentScore = :score WHERE id = :entryId")
     suspend fun updateSentimentScore(entryId: Long, score: Float)
 
+    // Claude'un ürettiği öneri metnini belirli kayıda yazar
+    @Query("UPDATE journal_entries SET recommendation = :recommendation WHERE id = :entryId")
+    suspend fun updateRecommendation(entryId: Long, recommendation: String)
+
     // Son 7 günün günlüklerini getirir — grafik için kullanılır
     // since: 7 gün öncesinin timestamp'i
     @Query("SELECT * FROM journal_entries WHERE userId = :userId AND createdAt >= :since AND sentimentScore IS NOT NULL ORDER BY createdAt ASC")

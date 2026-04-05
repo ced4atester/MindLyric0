@@ -46,6 +46,12 @@ class JournalViewModel(
             // 3. Adım: Skor gelirse veritabanındaki kaydı güncelle
             if (score != null) {
                 repository.updateSentimentScore(entryId, score)
+
+                // 4. Adım: Skora göre kişisel öneri üret ve kaydet
+                val recommendation = ClaudeService.getRecommendation(text, score)
+                if (recommendation != null) {
+                    repository.updateRecommendation(entryId, recommendation)
+                }
             }
         }
     }

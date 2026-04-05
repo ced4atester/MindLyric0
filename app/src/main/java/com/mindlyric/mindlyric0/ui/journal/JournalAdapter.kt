@@ -42,6 +42,8 @@ class JournalAdapter(
         val layoutSentiment: View = view.findViewById(R.id.layoutSentiment)
         val progressSentiment: ProgressBar = view.findViewById(R.id.progressSentiment)
         val tvSentimentScore: TextView = view.findViewById(R.id.tvSentimentScore)
+        // Claude öneri mesajı
+        val tvRecommendation: TextView = view.findViewById(R.id.tvRecommendation)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -94,6 +96,15 @@ class JournalAdapter(
             holder.tvSentimentScore.text = "$emoji ${score.toInt()}/10"
         } else {
             holder.layoutSentiment.visibility = View.GONE
+        }
+
+        // Öneri mesajı: Claude ürettiyse göster, yoksa gizle
+        val rec = entry.recommendation
+        if (rec != null) {
+            holder.tvRecommendation.visibility = View.VISIBLE
+            holder.tvRecommendation.text = "💬 $rec"
+        } else {
+            holder.tvRecommendation.visibility = View.GONE
         }
 
         // Uzun basınca silme callback'i tetiklenir

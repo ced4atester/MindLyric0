@@ -27,7 +27,66 @@ object ClaudeService {
     // Kullanılacak model
     private const val MODEL = "claude-opus-4-6"
 
-    // Duygu analizi yap — skor: -1.0 (çok negatif) ile +1.0 (çok pozitif)
+    // Skora göre kişisel öneri üret — Türkçe, kısa ve samimi bir mesaj döner
+    // Hata olursa null döner
+    suspend fun getRecommendation(text: String, score: Float): String? = withContext(Dispatchers.IO) {
+        try {
+            val durum = when {
+                score <= 3f -> "çok zor ve negatif"
+                score <= 6f -> "nötr ve karışık"
+                else        -> "güzel ve pozitif"
+            }
+
+            val prompt = """
+                Bir kullanıcı bugün günlüğüne şunları yazdı:
+                "$text"
+
+                Duygu analizi sonucuna göre bu gün $durum geçti (skor: ${score.toInt()}/10).
+
+                Bu kullanıcıya Türkçe, samimi, kısa (2-3 cümle) ve kişisel bir mesaj yaz.
+                - Negatif günlerde: empati kur, cesaretlendir
+                - Nötr günlerde: olumlu bir bakış açısı sun
+                - Pozitif günlerde: tebrik et, iyi enerjiyi pekiştir
+
+                SADECE mesajı yaz, başka hiçbir şey ekleme. Tırnak işareti kullanma.
+            """.trimIndent()
+
+            val requestBody = JSONObject().apply {
+                put("model", MODEL)
+                put("max_tokens", 150)
+                put("messages", JSONArray().apply {
+                    put(JSONObject().apply {
+                        put("role", "user")
+                        put("content", prompt)
+                    })
+                })
+            }.toString()
+
+            val request = Request.Builder()
+                .url(API_URL)
+                .addHeader("x-api-key", BuildConfig.CLAUDE_API_KEY)
+                .addHeader("anthropic-version", "2023-06-01")
+                .addHeader("content-type", "application/json")
+                .post(requestBody.toRequestBody("application/json".toMediaType()))
+                .build()
+
+            val response = client.newCall(request).execute()
+            val responseBody = response.body?.string() ?: return@withContext null
+
+            val jsonResponse = JSONObject(responseBody)
+            jsonResponse
+                .getJSONArray("content")
+                .getJSONObject(0)
+                .getString("text")
+                .trim()
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    // Duygu analizi yap — skor 1-10 arası tam sayı döner
     // Hata olursa null döner
     suspend fun analyzeSentiment(text: String): Float? = withContext(Dispatchers.IO) {
         try {
