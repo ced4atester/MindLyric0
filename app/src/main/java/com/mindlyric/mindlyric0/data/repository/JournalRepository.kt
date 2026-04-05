@@ -22,4 +22,8 @@ class JournalRepository(
 
     // Kullanıcının en sık seçtiği ruh halini döner
     suspend fun getTopMood(userId: Long): String? = dao.getTopMood(userId)
+
+    // Claude API'den gelen duygu skorunu belirli kayıda günceller
+    suspend fun updateSentimentScore(entryId: Long, score: Float) =
+        dao.updateSentimentScore(entryId, score)
 }

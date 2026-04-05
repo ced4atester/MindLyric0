@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -18,6 +20,16 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // local.properties dosyasını manuel olarak okuyoruz
+        // (project.findProperty sadece gradle.properties'i okur, local.properties'i okumaz)
+        val localProps = Properties()
+        val localPropsFile = rootProject.file("local.properties")
+        if (localPropsFile.exists()) {
+            localProps.load(localPropsFile.inputStream())
+        }
+        val apiKey = localProps.getProperty("CLAUDE_API_KEY") ?: ""
+        buildConfigField("String", "CLAUDE_API_KEY", "\"$apiKey\"")
     }
 
     buildTypes {
@@ -36,6 +48,11 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+
+    // BuildConfig aktif ediyoruz (API key buradan okunacak)
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 dependencies {
@@ -52,4 +69,6 @@ dependencies {
     ksp(libs.room.compiler)
     implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.lifecycle.viewmodel.ktx)
+    // Claude API ile HTTP isteği yapmak için OkHttp
+    implementation(libs.okhttp)
 }

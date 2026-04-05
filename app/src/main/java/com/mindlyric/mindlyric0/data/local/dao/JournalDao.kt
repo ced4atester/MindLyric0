@@ -29,4 +29,8 @@ interface JournalDao {
     // Kullanıcının en sık seçtiği ruh halini döner (null olabilir)
     @Query("SELECT moodLabel FROM journal_entries WHERE userId = :userId AND moodLabel IS NOT NULL GROUP BY moodLabel ORDER BY COUNT(*) DESC LIMIT 1")
     suspend fun getTopMood(userId: Long): String?
+
+    // Claude API'den gelen duygu skorunu belirli kayıda yazar
+    @Query("UPDATE journal_entries SET sentimentScore = :score WHERE id = :entryId")
+    suspend fun updateSentimentScore(entryId: Long, score: Float)
 }

@@ -3,6 +3,7 @@ package com.mindlyric.mindlyric0.ui.journal
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -37,6 +38,10 @@ class JournalAdapter(
         val tvDate: TextView = view.findViewById(R.id.tvEntryDate)
         val tvMood: TextView = view.findViewById(R.id.tvEntryMood)
         val tvText: TextView = view.findViewById(R.id.tvEntryText)
+        // Duygu analizi göstergeleri
+        val layoutSentiment: View = view.findViewById(R.id.layoutSentiment)
+        val progressSentiment: ProgressBar = view.findViewById(R.id.progressSentiment)
+        val tvSentimentScore: TextView = view.findViewById(R.id.tvSentimentScore)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -61,6 +66,35 @@ class JournalAdapter(
         }
 
         holder.tvText.text = entry.text
+
+        // Duygu skoru: Claude API analiz ettiyse göster, yoksa gizle
+        val score = entry.sentimentScore
+        if (score != null) {
+            holder.layoutSentiment.visibility = View.VISIBLE
+
+            // Skoru 1-10 → 0-100 arasına çevir (progress bar için)
+            val progress = ((score - 1f) / 9f * 100).toInt()
+            holder.progressSentiment.progress = progress
+
+            // Her skora farklı emoji: 1-3 negatif, 4-6 nötr, 7-10 pozitif
+            val emoji = when (score.toInt()) {
+                1    -> "😭"
+                2    -> "😢"
+                3    -> "😟"
+                4    -> "😕"
+                5    -> "😐"
+                6    -> "🙂"
+                7    -> "😊"
+                8    -> "😄"
+                9    -> "🤩"
+                10   -> "🥳"
+                else -> "😐"
+            }
+            // Emoji + skor göster (örnek: 😊 7/10)
+            holder.tvSentimentScore.text = "$emoji ${score.toInt()}/10"
+        } else {
+            holder.layoutSentiment.visibility = View.GONE
+        }
 
         // Uzun basınca silme callback'i tetiklenir
         holder.itemView.setOnLongClickListener {

@@ -12,7 +12,9 @@
       "Bash(ls /c/Users/user/AndroidStudioProjects/MindLyric0/app/src/main/res/drawable/avatar_*.jpg)",
       "Bash(./gradlew assembleDebug)",
       "Bash(GRADLE_OPTS=\"-Xmx512m\" ./gradlew assembleDebug)",
-      "Bash(JAVA_HOME=\"/c/Program Files/Android/Android Studio/jbr\" ./gradlew assembleDebug)"
+      "Bash(JAVA_HOME=\"/c/Program Files/Android/Android Studio/jbr\" ./gradlew assembleDebug)",
+      "Skill(claude-api)",
+      "Skill(claude-api:*)"
     ]
   }
 }
