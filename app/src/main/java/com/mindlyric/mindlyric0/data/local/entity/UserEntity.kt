@@ -15,9 +15,12 @@ import androidx.room.PrimaryKey
 )
 data class UserEntity(
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    val id: Long = 0,
     val username: String,
     val email: String,
     // Şifre SHA-256 hash olarak saklanır, düz metin değil
-    val password: String
+    val password: String,
+    // Seçilen avatar görselin kaynak id'si (R.drawable.avatar_1 gibi)
+    // Seçilmemişse null — varsayılan avatar gösterilir
+    val avatarResId: Int? = null
 )

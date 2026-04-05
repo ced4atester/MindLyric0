@@ -35,6 +35,23 @@
     <string name="main_toast_empty">Bir &#351;eyler yaz &#246;nce &#128221;</string>
     <string name="main_delete_hint">Silmek i&#231;in uzun bas</string>
 
+    <!-- Profile -->
+    <string name="profile_title">Profilim</string>
+    <string name="profile_choose_avatar">Avatar Se&#231;</string>
+    <string name="profile_change_password">&#350;ifre De&#287;i&#351;tir</string>
+    <string name="profile_delete_account">Hesab&#305; Sil</string>
+    <string name="profile_old_password">Mevcut &#350;ifre</string>
+    <string name="profile_new_password">Yeni &#350;ifre</string>
+    <string name="profile_save_password">Kaydet</string>
+    <string name="profile_delete_confirm_title">Hesab&#305; Sil</string>
+    <string name="profile_delete_confirm_msg">T&#252;m g&#252;nl&#252;klerinle birlikte hesab&#305;n kal&#305;c&#305; olarak silinecek. Emin misin?</string>
+    <string name="profile_delete_confirm_btn">Evet, Sil</string>
+    <string name="profile_cancel">&#304;ptal</string>
+    <string name="profile_password_success">&#350;ifre ba&#351;ar&#305;yla de&#287;i&#351;tirildi</string>
+    <string name="profile_journals_count">Toplam G&#252;nl&#252;k</string>
+    <string name="profile_top_mood">En S&#305;k Duygu</string>
+    <string name="profile_no_mood">Hen&#252;z yok</string>
+
     <!-- Mood chips -->
     <string name="mood_happy">&#128522; Mutlu</string>
     <string name="mood_sad">&#128546; &#220;zg&#252;n</string>

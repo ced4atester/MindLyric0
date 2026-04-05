@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
@@ -16,10 +17,12 @@ import com.google.android.material.chip.ChipGroup
 import com.google.android.material.textfield.TextInputEditText
 import com.mindlyric.mindlyric0.data.local.db.DbProvider
 import com.mindlyric.mindlyric0.data.repository.JournalRepository
+import com.mindlyric.mindlyric0.data.repository.UserRepository
 import com.mindlyric.mindlyric0.ui.auth.LoginActivity
 import com.mindlyric.mindlyric0.ui.journal.JournalAdapter
 import com.mindlyric.mindlyric0.ui.journal.JournalViewModel
 import com.mindlyric.mindlyric0.ui.journal.JournalViewModelFactory
+import com.mindlyric.mindlyric0.ui.profile.ProfileActivity
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -51,6 +54,23 @@ class MainActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(
             this, JournalViewModelFactory(repository, userId)
         )[JournalViewModel::class.java]
+
+        // ---- Profil avatar ikonu ----
+        val ivProfileAvatar = findViewById<ImageView>(R.id.ivProfileAvatar)
+
+        // Kullanıcının seçili avatarını üst barda göster
+        val userRepository = UserRepository(DbProvider.get(this).userDao())
+        lifecycleScope.launch {
+            val user = userRepository.getUserById(userId)
+            if (user?.avatarResId != null) {
+                ivProfileAvatar.setImageResource(user.avatarResId)
+            }
+        }
+
+        // Profile ikonuna basınca ProfileActivity aç
+        ivProfileAvatar.setOnClickListener {
+            startActivity(Intent(this, ProfileActivity::class.java))
+        }
 
         // ---- Çıkış butonu ----
         findViewById<Button>(R.id.btnLogout).setOnClickListener {

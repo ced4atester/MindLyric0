@@ -39,8 +39,9 @@ class AuthViewModel(private val repository: UserRepository) : ViewModel() {
             try {
                 val result = repository.login(email, password)
                 _authState.value = when (result) {
-                    is LoginResult.Success          -> AuthState.LoginSuccess(result.userId)
-                    LoginResult.InvalidCredentials  -> AuthState.Error("E-posta veya şifre hatalı", ValidationField.PASSWORD)
+                    is LoginResult.Success   -> AuthState.LoginSuccess(result.userId)
+                    LoginResult.UserNotFound -> AuthState.Error("Bu e-posta ile kayıtlı bir hesap bulunamadı", ValidationField.EMAIL)
+                    LoginResult.WrongPassword -> AuthState.Error("Şifre hatalı", ValidationField.PASSWORD)
                 }
             } catch (e: Exception) {
                 _authState.value = AuthState.Error("Beklenmeyen hata: ${e.message}", ValidationField.GENERAL)

@@ -32,16 +32,44 @@ class UserRepository(private val userDao: UserDao) {
 
     /**
      * Kullanıcı girişini doğrular.
-     * Girilen şifre hash'lenerek veritabanındaki hash ile karşılaştırılır.
+     * Önce email var mı kontrol edilir, sonra şifre doğrulanır.
+     * Böylece "kullanıcı yok" ve "şifre yanlış" ayrı hata olarak döner.
      */
     suspend fun login(email: String, password: String): LoginResult {
+        // Email veritabanında var mı kontrol et
+        val userByEmail = userDao.getUserByEmail(email)
+        if (userByEmail == null) return LoginResult.UserNotFound
+
+        // Email var ama şifre yanlış mı?
         val hashedPassword = HashUtil.sha256(password)
         val user = userDao.login(email, hashedPassword)
         return if (user != null) {
             LoginResult.Success(userId = user.id)
         } else {
-            LoginResult.InvalidCredentials
+            LoginResult.WrongPassword
         }
+    }
+
+    // Kullanıcının profil bilgilerini getirir
+    suspend fun getUserById(userId: Long) = userDao.getUserById(userId)
+
+    // Yeni avatar kaydeder
+    suspend fun updateAvatar(userId: Long, avatarResId: Int) =
+        userDao.updateAvatar(userId, avatarResId)
+
+    // Şifre değiştirme: önce eski şifre doğrulanır, sonra yeni şifre hash'lenerek kaydedilir
+    suspend fun changePassword(userId: Long, oldPassword: String, newPassword: String): ChangePasswordResult {
+        val user = userDao.getUserById(userId) ?: return ChangePasswordResult.Error("Kullanıcı bulunamadı")
+        // Eski şifreyi hash'le ve kayıttaki ile karşılaştır
+        if (HashUtil.sha256(oldPassword) != user.password) return ChangePasswordResult.WrongPassword
+        userDao.updatePassword(userId, HashUtil.sha256(newPassword))
+        return ChangePasswordResult.Success
+    }
+
+    // Hesabı siler: önce günlükler, sonra kullanıcı kaydı silинir
+    suspend fun deleteAccount(userId: Long) {
+        userDao.deleteUserJournals(userId) // önce günlükleri sil
+        userDao.deleteUser(userId)         // sonra kullanıcıyı sil
     }
 }
 
@@ -53,6 +81,14 @@ sealed class RegisterResult {
 
 // Giriş işleminin olası sonuçları
 sealed class LoginResult {
-    data class Success(val userId: Long) : LoginResult()  // Long: Room id tipiyle uyumlu
-    object InvalidCredentials : LoginResult()
+    data class Success(val userId: Long) : LoginResult()
+    object UserNotFound : LoginResult()   // Bu email ile kayıtlı hesap yok
+    object WrongPassword : LoginResult()  // Email var ama şifre yanlış
+}
+
+// Şifre değiştirme işleminin olası sonuçları
+sealed class ChangePasswordResult {
+    object Success : ChangePasswordResult()
+    object WrongPassword : ChangePasswordResult()
+    data class Error(val message: String) : ChangePasswordResult()
 }

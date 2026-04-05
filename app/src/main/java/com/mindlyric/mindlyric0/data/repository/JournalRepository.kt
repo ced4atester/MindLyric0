@@ -16,4 +16,10 @@ class JournalRepository(
 
     // Günlük kaydını siler
     suspend fun delete(entry: JournalEntryEntity) = dao.delete(entry)
+
+    // Kullanıcının toplam günlük sayısını döner
+    suspend fun getJournalCount(userId: Long): Int = dao.getJournalCount(userId)
+
+    // Kullanıcının en sık seçtiği ruh halini döner
+    suspend fun getTopMood(userId: Long): String? = dao.getTopMood(userId)
 }

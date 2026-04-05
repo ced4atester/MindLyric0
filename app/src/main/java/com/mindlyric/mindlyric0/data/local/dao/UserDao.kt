@@ -26,4 +26,24 @@ interface UserDao {
      */
     @Query("SELECT * FROM users WHERE email = :email AND password = :passwordHash LIMIT 1")
     suspend fun login(email: String, passwordHash: String): UserEntity?
+
+    // Kullanıcıyı id'ye göre getirir — profil ekranında bilgileri göstermek için
+    @Query("SELECT * FROM users WHERE id = :userId LIMIT 1")
+    suspend fun getUserById(userId: Long): UserEntity?
+
+    // Seçilen avatar id'sini günceller
+    @Query("UPDATE users SET avatarResId = :avatarResId WHERE id = :userId")
+    suspend fun updateAvatar(userId: Long, avatarResId: Int)
+
+    // Şifreyi günceller — yeni şifre hash'lenmiş olarak geçilmeli
+    @Query("UPDATE users SET password = :newPasswordHash WHERE id = :userId")
+    suspend fun updatePassword(userId: Long, newPasswordHash: String)
+
+    // Kullanıcıyı tamamen siler
+    @Query("DELETE FROM users WHERE id = :userId")
+    suspend fun deleteUser(userId: Long)
+
+    // Kullanıcıya ait tüm günlük kayıtlarını siler — hesap silinirken çağrılır
+    @Query("DELETE FROM journal_entries WHERE userId = :userId")
+    suspend fun deleteUserJournals(userId: Long)
 }

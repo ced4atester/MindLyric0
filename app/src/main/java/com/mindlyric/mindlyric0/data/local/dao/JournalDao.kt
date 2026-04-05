@@ -19,7 +19,14 @@ interface JournalDao {
     suspend fun delete(entry: JournalEntryEntity)
 
     // Sadece belirli kullanıcıya ait kayıtları getirir, en yeniden eskiye sıralar
-    // :userId → dışarıdan gelen parametre, SQL injection'a karşı güvenli
     @Query("SELECT * FROM journal_entries WHERE userId = :userId ORDER BY createdAt DESC")
     fun observeByUser(userId: Long): Flow<List<JournalEntryEntity>>
+
+    // Kullanıcının toplam günlük sayısını döner
+    @Query("SELECT COUNT(*) FROM journal_entries WHERE userId = :userId")
+    suspend fun getJournalCount(userId: Long): Int
+
+    // Kullanıcının en sık seçtiği ruh halini döner (null olabilir)
+    @Query("SELECT moodLabel FROM journal_entries WHERE userId = :userId AND moodLabel IS NOT NULL GROUP BY moodLabel ORDER BY COUNT(*) DESC LIMIT 1")
+    suspend fun getTopMood(userId: Long): String?
 }

@@ -9,13 +9,13 @@ import com.mindlyric.mindlyric0.data.local.entity.UserEntity
 
 /**
  * Room veritabanı ana sınıfı.
- * version = 3: journal_entries tablosuna userId sütunu eklendi.
- *   (v2 → v3: günlükler artık kullanıcıya özel)
+ * version = 4: users tablosuna avatarResId sütunu eklendi.
+ *   (v3 → v4: kullanıcı artık avatar seçebiliyor)
  * fallbackToDestructiveMigration kullanıldığı için uygulama silinip yeniden kurulmalı.
  */
 @Database(
     entities = [JournalEntryEntity::class, UserEntity::class],
-    version = 3,
+    version = 4,
     exportSchema = false
 )
 abstract class MindLyricDatabase : RoomDatabase() {
