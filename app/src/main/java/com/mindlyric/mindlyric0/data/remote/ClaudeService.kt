@@ -27,6 +27,63 @@ object ClaudeService {
     // Kullanılacak model
     private const val MODEL = "claude-opus-4-6"
 
+    // Son 7 günün ortalama skoruna göre yarın için tahmin üret
+    // Hata olursa null döner
+    suspend fun getMoodPrediction(averageScore: Float, entryCount: Int): String? = withContext(Dispatchers.IO) {
+        try {
+            val durum = when {
+                averageScore <= 3f -> "çoğunlukla zor ve negatif"
+                averageScore <= 6f -> "ortalama ve nötr"
+                else               -> "genel olarak iyi ve pozitif"
+            }
+
+            val prompt = """
+                Bir kullanıcı son 7 gün içinde $entryCount günlük yazdı.
+                Bu günlüklerin ortalama duygu skoru ${String.format("%.1f", averageScore)}/10 — $durum geçti.
+
+                Bu örüntüye dayanarak kullanıcıya Türkçe, samimi ve kısa (2-3 cümle) bir tahmin/yorum yaz.
+                - Trende dikkat çek
+                - "Yarın" veya "önümüzdeki günler" hakkında olumlu/gerçekçi bir öngörü sun
+                - Motive edici ama abartısız ol
+
+                SADECE tahmini yaz, başka hiçbir şey ekleme. Tırnak işareti kullanma.
+            """.trimIndent()
+
+            val requestBody = JSONObject().apply {
+                put("model", MODEL)
+                put("max_tokens", 150)
+                put("messages", JSONArray().apply {
+                    put(JSONObject().apply {
+                        put("role", "user")
+                        put("content", prompt)
+                    })
+                })
+            }.toString()
+
+            val request = Request.Builder()
+                .url(API_URL)
+                .addHeader("x-api-key", BuildConfig.CLAUDE_API_KEY)
+                .addHeader("anthropic-version", "2023-06-01")
+                .addHeader("content-type", "application/json")
+                .post(requestBody.toRequestBody("application/json".toMediaType()))
+                .build()
+
+            val response = client.newCall(request).execute()
+            val responseBody = response.body?.string() ?: return@withContext null
+
+            val jsonResponse = JSONObject(responseBody)
+            jsonResponse
+                .getJSONArray("content")
+                .getJSONObject(0)
+                .getString("text")
+                .trim()
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
     // Skora göre kişisel öneri üret — Türkçe, kısa ve samimi bir mesaj döner
     // Hata olursa null döner
     suspend fun getRecommendation(text: String, score: Float): String? = withContext(Dispatchers.IO) {

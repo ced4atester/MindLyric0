@@ -42,4 +42,8 @@ interface JournalDao {
     // since: 7 gün öncesinin timestamp'i
     @Query("SELECT * FROM journal_entries WHERE userId = :userId AND createdAt >= :since AND sentimentScore IS NOT NULL ORDER BY createdAt ASC")
     suspend fun getEntriesSince(userId: Long, since: Long): List<JournalEntryEntity>
+
+    // Son 7 günün duygu skoru ortalamasını döner — tahmin için kullanılır
+    @Query("SELECT AVG(sentimentScore) FROM journal_entries WHERE userId = :userId AND createdAt >= :since AND sentimentScore IS NOT NULL")
+    suspend fun getAverageScore(userId: Long, since: Long): Float?
 }

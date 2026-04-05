@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mindlyric.mindlyric0.data.local.entity.JournalEntryEntity
 import com.mindlyric.mindlyric0.data.local.entity.UserEntity
+import com.mindlyric.mindlyric0.data.remote.ClaudeService
 import com.mindlyric.mindlyric0.data.repository.ChangePasswordResult
 import com.mindlyric.mindlyric0.data.repository.JournalRepository
 import com.mindlyric.mindlyric0.data.repository.UserRepository
@@ -28,6 +29,10 @@ class ProfileViewModel(
     // Son 7 günün günlük verileri — grafik için kullanılır
     private val _trendEntries = MutableLiveData<List<JournalEntryEntity>>(emptyList())
     val trendEntries: LiveData<List<JournalEntryEntity>> = _trendEntries
+
+    // Claude'un ürettiği yarın tahmini
+    private val _prediction = MutableLiveData<String?>()
+    val prediction: LiveData<String?> = _prediction
 
     // Kullanıcı bilgilerini tutar — Activity bu LiveData'yı gözlemler
     private val _user = MutableLiveData<UserEntity?>()
@@ -62,9 +67,17 @@ class ProfileViewModel(
     // Son 7 günün duygu skorlu günlüklerini yükler
     fun loadTrend() {
         viewModelScope.launch {
-            // 7 gün öncesinin millisaniye cinsinden timestamp'i
             val sevenDaysAgo = System.currentTimeMillis() - (7 * 24 * 60 * 60 * 1000L)
-            _trendEntries.value = journalRepository.getEntriesSince(userId, sevenDaysAgo)
+            val entries = journalRepository.getEntriesSince(userId, sevenDaysAgo)
+            _trendEntries.value = entries
+
+            // Yeterli veri varsa (en az 2 günlük) tahmin üret
+            if (entries.size >= 2) {
+                val avgScore = journalRepository.getAverageScore(userId, sevenDaysAgo)
+                if (avgScore != null) {
+                    _prediction.value = ClaudeService.getMoodPrediction(avgScore, entries.size)
+                }
+            }
         }
     }
 

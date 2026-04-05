@@ -34,4 +34,8 @@ class JournalRepository(
     // Son 7 günün skorlu günlüklerini döner (grafik için)
     suspend fun getEntriesSince(userId: Long, since: Long) =
         dao.getEntriesSince(userId, since)
+
+    // Son 7 günün ortalama duygu skorunu döner (tahmin için)
+    suspend fun getAverageScore(userId: Long, since: Long) =
+        dao.getAverageScore(userId, since)
 }

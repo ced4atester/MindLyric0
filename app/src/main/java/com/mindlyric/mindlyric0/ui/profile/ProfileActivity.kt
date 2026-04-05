@@ -114,6 +114,19 @@ class ProfileActivity : AppCompatActivity() {
             })
         }
 
+        // ---- Yarın tahmini gözlemle ----
+        val cardPrediction = findViewById<View>(R.id.cardPrediction)
+        val tvPrediction = findViewById<TextView>(R.id.tvPrediction)
+        viewModel.prediction.observe(this) { prediction ->
+            if (prediction != null) {
+                cardPrediction.visibility = View.VISIBLE
+                tvPrediction.text = prediction
+            } else {
+                cardPrediction.visibility = View.GONE
+            }
+        }
+
+
 
         // ---- Avatar seçme ----
         btnChooseAvatar.setOnClickListener {
