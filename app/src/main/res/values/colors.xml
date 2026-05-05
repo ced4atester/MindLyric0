@@ -9,4 +9,11 @@
     <color name="brand_surface">#F4F3FF</color>       <!-- Çok açık mor-beyaz arka plan -->
     <color name="brand_on_primary">#FFFFFF</color>    <!-- Primary üzerindeki metin rengi -->
     <color name="brand_text_secondary">#757575</color><!-- İkincil metin rengi (açıklama) -->
+
+    <!-- Login/Register ekran renkleri -->
+    <color name="auth_top_bg">#f5f3ff</color>         <!-- Üst alan açık lavanta -->
+    <color name="auth_bottom_bg">#1A1A2E</color>      <!-- Alt kart koyu lacivert -->
+    <color name="auth_btn_primary">#6C63FF</color>    <!-- Ana giriş butonu moru -->
+    <color name="auth_btn_secondary">#2D2B55</color>  <!-- İkincil buton koyu mor -->
+    <color name="auth_text_hint">#A0A0C0</color>      <!-- Alt karttaki açıklama metni -->
 </resources>
