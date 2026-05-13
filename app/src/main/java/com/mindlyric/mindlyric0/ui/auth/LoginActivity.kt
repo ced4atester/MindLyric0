@@ -102,9 +102,9 @@ class LoginActivity : AppCompatActivity() {
                     progressBar.visibility = View.GONE
                     btnLogin.isEnabled = true
 
-                    if (cbRememberMe.isChecked) {
-                        prefs.edit().putLong(KEY_USER_ID, state.userId).apply()
-                    }
+                    // "Beni Hatırla" seçiliyse kalıcı, seçilmemişse yine de oturum için geçici kaydet
+                    // MainActivity userId'yi SharedPreferences'tan okuduğu için her durumda yazılmalı
+                    prefs.edit().putLong(KEY_USER_ID, state.userId).apply()
 
                     navigateToMain(state.userId)
                     viewModel.resetState()

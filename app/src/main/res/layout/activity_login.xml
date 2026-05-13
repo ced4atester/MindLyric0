@@ -79,6 +79,7 @@
                 android:layout_height="wrap_content"
                 android:text="Nasıl devam etmek istersin?"
                 android:textColor="@color/auth_text_hint"
+                android:fontFamily="@font/thondpachem_regular"
                 android:textSize="14sp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="28dp" />
@@ -136,6 +137,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="14dp"
                     android:hint="@string/login_hint_email"
+                    android:textColorHint="@color/auth_text_hint"
                     app:boxStrokeColor="@color/auth_btn_primary"
                     app:hintTextColor="@color/auth_text_hint">
 
@@ -155,9 +157,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
                     android:hint="@string/login_hint_password"
+                    android:textColorHint="@color/auth_text_hint"
                     app:boxStrokeColor="@color/auth_btn_primary"
                     app:hintTextColor="@color/auth_text_hint"
-                    app:endIconMode="password_toggle">
+                    app:endIconMode="password_toggle"
+                    app:endIconTint="@color/white">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etLoginPassword"
@@ -232,7 +236,7 @@
         android:layout_height="35dp"
         android:src="@drawable/ellipse"
         android:scaleType="fitXY"
-        android:tint="@color/auth_bottom_bg"
+        app:tint="@color/auth_bottom_bg"
         app:layout_constraintBottom_toTopOf="@id/layoutBottom"
         app:layout_constraintVertical_bias="1"
         app:layout_constraintStart_toStartOf="parent"

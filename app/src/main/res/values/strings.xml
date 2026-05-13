@@ -24,7 +24,7 @@
     <string name="register_login_link">Giri&#351; Yap</string>
 
     <!-- Main / Journal -->
-    <string name="main_title">G&#252;nl&#252;&#287;&#252;m &#128214;</string>
+    <string name="main_title">G&#252;nl&#252;&#287;&#252;m</string>
     <string name="main_logout">&#199;&#305;k&#305;&#351;</string>
     <string name="main_hint_journal">Bug&#252;n nas&#305;l ge&#231;ti?</string>
     <string name="main_save">Kaydet</string>

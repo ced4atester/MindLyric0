@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Profil üst kartı — alt köşeleri yuvarlak koyu kart -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/auth_bottom_bg" />
+    <corners
+        android:bottomLeftRadius="36dp"
+        android:bottomRightRadius="36dp" />
+</shape>

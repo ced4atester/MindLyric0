@@ -62,8 +62,12 @@ class MainActivity : AppCompatActivity() {
         val userRepository = UserRepository(DbProvider.get(this).userDao())
         lifecycleScope.launch {
             val user = userRepository.getUserById(userId)
-            if (user?.avatarResId != null) {
+            if (user?.avatarResId != null && user.avatarResId > 0) {
+                // Kullanıcı avatar seçmişse onu göster
                 ivProfileAvatar.setImageResource(user.avatarResId)
+            } else {
+                // Avatar seçilmemişse varsayılan profil ikonunu göster
+                ivProfileAvatar.setImageResource(R.drawable.ic_user_profile)
             }
         }
 
