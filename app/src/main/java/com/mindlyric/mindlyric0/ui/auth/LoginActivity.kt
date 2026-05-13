@@ -6,8 +6,10 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
+import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.textfield.TextInputEditText
@@ -20,7 +22,6 @@ import com.mindlyric.mindlyric0.data.repository.UserRepository
 class LoginActivity : AppCompatActivity() {
 
     companion object {
-        // SharedPreferences dosya adı ve anahtar; RegisterActivity ile aynı değerler kullanılır
         const val PREFS_NAME = "mindlyric_prefs"
         const val KEY_USER_ID = "logged_in_user_id"
     }
@@ -30,59 +31,69 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // ---- Oturum kalıcılığı kontrolü ----
-        // "Beni Hatırla" ile daha önce giriş yapıldıysa userId SharedPreferences'ta saklanır.
-        // Uygulama açılırken kontrol edilir; kayıtlı userId varsa login ekranı gösterilmez.
-
+        // Daha önce "Beni Hatırla" seçildiyse direkt ana ekrana geç
         val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        // getLong: userId Long tipinde, Int kullanmak değer kaybına yol açar
         val savedUserId = prefs.getLong(KEY_USER_ID, -1L)
         if (savedUserId != -1L) {
             navigateToMain(savedUserId)
-            return // setContentView çağrılmadan activity bitirilir
+            return
         }
 
         setContentView(R.layout.activity_login)
 
         // ---- ViewModel kurulumu ----
-        // UserRepository oluştur ve AuthViewModelFactory aracılığıyla ViewModel'e geç
         val repository = UserRepository(DbProvider.get(this).userDao())
         viewModel = ViewModelProvider(
             this, AuthViewModelFactory(repository)
         )[AuthViewModel::class.java]
 
-        val tilEmail      = findViewById<TextInputLayout>(R.id.tilLoginEmail)
-        val tilPassword   = findViewById<TextInputLayout>(R.id.tilLoginPassword)
-        val etEmail       = findViewById<TextInputEditText>(R.id.etLoginEmail)
-        val etPassword    = findViewById<TextInputEditText>(R.id.etLoginPassword)
-        val btnLogin      = findViewById<Button>(R.id.btnLogin)
-        val cbRememberMe  = findViewById<CheckBox>(R.id.cbRememberMe)
-        val progressBar   = findViewById<ProgressBar>(R.id.progressLogin)
-        val tvGoToRegister = findViewById<TextView>(R.id.tvGoToRegister)
+        // ---- View referansları ----
+        val tilEmail        = findViewById<TextInputLayout>(R.id.tilLoginEmail)
+        val tilPassword     = findViewById<TextInputLayout>(R.id.tilLoginPassword)
+        val etEmail         = findViewById<TextInputEditText>(R.id.etLoginEmail)
+        val etPassword      = findViewById<TextInputEditText>(R.id.etLoginPassword)
+        val btnLogin        = findViewById<Button>(R.id.btnLogin)
+        val btnLoginEmail   = findViewById<Button>(R.id.btnLoginEmail)
+        val btnLoginGoogle  = findViewById<Button>(R.id.btnLoginGoogle)
+        val cbRememberMe    = findViewById<CheckBox>(R.id.cbRememberMe)
+        val progressBar     = findViewById<ProgressBar>(R.id.progressLogin)
+        val tvGoToRegister  = findViewById<TextView>(R.id.tvGoToRegister)
+        val layoutEmailForm = findViewById<LinearLayout>(R.id.layoutEmailForm)
 
+        // Kayıt ol linkine git
         tvGoToRegister.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
         }
 
+        // Google ile giriş — şimdilik yakında gelecek mesajı
+        btnLoginGoogle.setOnClickListener {
+            Toast.makeText(this, "Google girişi yakında eklenecek!", Toast.LENGTH_SHORT).show()
+        }
+
+        // E-posta ile giriş butonuna basınca form alanlarını göster/gizle
+        btnLoginEmail.setOnClickListener {
+            if (layoutEmailForm.visibility == View.GONE) {
+                layoutEmailForm.visibility = View.VISIBLE
+            } else {
+                layoutEmailForm.visibility = View.GONE
+            }
+        }
+
+        // Giriş yap butonuna basınca doğrulama ve login işlemi
         btnLogin.setOnClickListener {
-            // Önceki hata mesajlarını temizle; her tıklamada taze başlat
             tilEmail.error = null
             tilPassword.error = null
 
             val email    = etEmail.text.toString().trim()
             val password = etPassword.text.toString().trim()
-
-            // Validasyon ve DB işlemi ViewModel'da; Activity sadece değerleri iletir
             viewModel.login(email, password)
         }
 
         // ---- Durum gözlemi ----
-        // ViewModel'dan gelen her state değişikliğinde UI güncellenir
         viewModel.authState.observe(this) { state ->
             when (state) {
 
                 is AuthState.Loading -> {
-                    // İşlem başladı: buton devre dışı, spinner görünür → çift tıklama engellenir
                     btnLogin.isEnabled = false
                     progressBar.visibility = View.VISIBLE
                 }
@@ -91,19 +102,17 @@ class LoginActivity : AppCompatActivity() {
                     progressBar.visibility = View.GONE
                     btnLogin.isEnabled = true
 
-                    // "Beni Hatırla" seçildiyse userId'yi SharedPreferences'a kaydet
-                    if (cbRememberMe.isChecked) {
-                        prefs.edit().putLong(KEY_USER_ID, state.userId).apply()
-                    }
+                    // "Beni Hatırla" seçiliyse kalıcı, seçilmemişse yine de oturum için geçici kaydet
+                    // MainActivity userId'yi SharedPreferences'tan okuduğu için her durumda yazılmalı
+                    prefs.edit().putLong(KEY_USER_ID, state.userId).apply()
 
                     navigateToMain(state.userId)
-                    viewModel.resetState() // tekrar tetiklenmemesi için Idle'a dön
+                    viewModel.resetState()
                 }
 
                 is AuthState.ValidationError -> {
                     progressBar.visibility = View.GONE
                     btnLogin.isEnabled = true
-                    // Hatayı ilgili alanın altında göster
                     when (state.field) {
                         ValidationField.EMAIL    -> tilEmail.error = state.message
                         ValidationField.PASSWORD -> tilPassword.error = state.message
@@ -115,7 +124,6 @@ class LoginActivity : AppCompatActivity() {
                 is AuthState.Error -> {
                     progressBar.visibility = View.GONE
                     btnLogin.isEnabled = true
-                    // Yanlış şifre/email hatası şifre alanında gösterilir
                     when (state.field) {
                         ValidationField.EMAIL    -> tilEmail.error = state.message
                         ValidationField.PASSWORD -> tilPassword.error = state.message
@@ -125,7 +133,6 @@ class LoginActivity : AppCompatActivity() {
                 }
 
                 else -> {
-                    // Idle ve diğer durumlar: UI'ı sıfırla
                     progressBar.visibility = View.GONE
                     btnLogin.isEnabled = true
                 }
@@ -133,7 +140,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    // MainActivity'ye geçiş ve bu Activity'yi yığından kaldır
+    // MainActivity'ye geçiş
     private fun navigateToMain(userId: Long) {
         startActivity(Intent(this, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

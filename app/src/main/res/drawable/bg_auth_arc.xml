@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Üst bölümün renginde oval şekil — koyu kartın üstüne bindirilince içbükey yay efekti oluşturur -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <solid android:color="@color/auth_top_bg" />
+</shape>

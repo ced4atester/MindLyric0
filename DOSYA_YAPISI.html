@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MindLyric — Dosya Yapısı</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f5f3ff;
+    color: #1a1a2e;
+    padding: 40px 20px;
+  }
+  .container { max-width: 860px; margin: 0 auto; }
+
+  /* Başlık */
+  .header {
+    background: linear-gradient(135deg, #6C63FF, #4B44CC);
+    color: white;
+    border-radius: 16px;
+    padding: 36px 40px;
+    margin-bottom: 32px;
+    text-align: center;
+  }
+  .header h1 { font-size: 32px; letter-spacing: 1px; }
+  .header p { margin-top: 8px; opacity: 0.85; font-size: 15px; }
+
+  /* Bölüm kartı */
+  .section {
+    background: white;
+    border-radius: 14px;
+    padding: 28px 32px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 12px rgba(108,99,255,0.08);
+    border-left: 5px solid #6C63FF;
+  }
+  .section.green  { border-left-color: #10b981; }
+  .section.orange { border-left-color: #f59e0b; }
+  .section.pink   { border-left-color: #ec4899; }
+  .section.blue   { border-left-color: #3b82f6; }
+  .section.gray   { border-left-color: #6b7280; }
+
+  .section-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-subtitle {
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 18px;
+  }
+
+  /* Tablo */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  thead tr {
+    background: #f5f3ff;
+  }
+  th {
+    text-align: left;
+    padding: 10px 14px;
+    font-weight: 600;
+    color: #4B44CC;
+    border-bottom: 2px solid #e9d5ff;
+  }
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #f0eeff;
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #faf9ff; }
+
+  code {
+    background: #ede9fe;
+    color: #6C63FF;
+    padding: 2px 7px;
+    border-radius: 5px;
+    font-family: 'Consolas', monospace;
+    font-size: 13px;
+  }
+
+  /* Mimari akış */
+  .flow {
+    background: #1a1a2e;
+    color: #a78bfa;
+    border-radius: 12px;
+    padding: 24px 32px;
+    font-family: 'Consolas', monospace;
+    font-size: 14px;
+    line-height: 2;
+    margin-top: 8px;
+  }
+  .flow .arrow { color: #6C63FF; font-size: 16px; }
+
+  @media print {
+    body { background: white; padding: 20px; }
+    .section { box-shadow: none; border: 1px solid #e9d5ff; page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Başlık -->
+  <div class="header">
+    <h1>📱 MindLyric — Dosya Yapısı Rehberi</h1>
+    <p>Projedeki tüm dosyaların ne işe yaradığı, katman katman açıklandı.</p>
+  </div>
+
+  <!-- AUTH -->
+  <div class="section">
+    <div class="section-title">🔐 ui/auth/ — Giriş &amp; Kayıt Ekranları</div>
+    <div class="section-subtitle">Kullanıcının hesabına giriş yapmasını ve kayıt olmasını sağlayan ekranlar burada.</div>
+    <table>
+      <thead><tr><th>Dosya</th><th>Ne İşe Yarıyor?</th></tr></thead>
+      <tbody>
+        <tr><td><code>LoginActivity.kt</code></td><td>Giriş ekranının kodları. Email/şifre okur, ViewModel'e gönderir, sonuca göre ana ekrana geçer.</td></tr>
+        <tr><td><code>RegisterActivity.kt</code></td><td>Kayıt ekranının kodları. Kullanıcı adı, email, şifre alır, ViewModel'e gönderir.</td></tr>
+        <tr><td><code>AuthViewModel.kt</code></td><td>Giriş ve kayıt işlemlerinin iş mantığı. Alanları doğrular, DB'ye yazar, sonucu ekrana bildirir.</td></tr>
+        <tr><td><code>AuthViewModelFactory.kt</code></td><td>AuthViewModel'i oluşturmak için gereken yardımcı sınıf. (Android zorunluluğu)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- JOURNAL -->
+  <div class="section green">
+    <div class="section-title">📓 ui/journal/ — Günlük Ekranı</div>
+    <div class="section-subtitle">Kullanıcının günlüklerini yönettiği ve AI analizinin gerçekleştiği katman.</div>
+    <table>
+      <thead><tr><th>Dosya</th><th>Ne İşe Yarıyor?</th></tr></thead>
+      <tbody>
+        <tr><td><code>JournalViewModel.kt</code></td><td>Günlük ekleme, silme ve listeleme işlemlerini yönetir. Claude API'yi çağırarak duygu analizi yaptırır.</td></tr>
+        <tr><td><code>JournalViewModelFactory.kt</code></td><td>JournalViewModel'i userId ile birlikte oluşturan yardımcı sınıf.</td></tr>
+        <tr><td><code>JournalAdapter.kt</code></td><td>Günlük listesini ekranda gösterir. Her kartı (tarih, metin, skor, öneri) doldurur.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- PROFILE -->
+  <div class="section pink">
+    <div class="section-title">👤 ui/profile/ — Profil Ekranı</div>
+    <div class="section-subtitle">Kullanıcının kişisel bilgilerini, istatistiklerini ve tahminlerini gösteren ekran.</div>
+    <table>
+      <thead><tr><th>Dosya</th><th>Ne İşe Yarıyor?</th></tr></thead>
+      <tbody>
+        <tr><td><code>ProfileActivity.kt</code></td><td>Profil ekranının kodları. Avatar seçimi, şifre değiştirme, hesap silme, trend grafiği ve yarın tahmini gösterilir.</td></tr>
+        <tr><td><code>ProfileViewModel.kt</code></td><td>Profil ekranının iş mantığı. Kullanıcı bilgilerini, istatistikleri, grafiği ve tahmini yükler.</td></tr>
+        <tr><td><code>ProfileViewModelFactory.kt</code></td><td>ProfileViewModel'i oluşturan yardımcı sınıf.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MAIN -->
+  <div class="section blue">
+    <div class="section-title">🏠 MainActivity.kt</div>
+    <div class="section-subtitle">Ana günlük ekranı. Kullanıcının günlüklerini listeler, yeni günlük eklenmesini sağlar, profil ikonuna tıklanınca profil sayfasına geçer.</div>
+  </div>
+
+  <!-- ENTITY -->
+  <div class="section orange">
+    <div class="section-title">📋 data/local/entity/ — Veritabanı Tablo Tanımları</div>
+    <div class="section-subtitle">Room veritabanındaki her tablonun sütunları burada tanımlanır.</div>
+    <table>
+      <thead><tr><th>Dosya</th><th>Ne İşe Yarıyor?</th></tr></thead>
+      <tbody>
+        <tr><td><code>UserEntity.kt</code></td><td>Kullanıcı tablosunu tanımlar. id, kullanıcı adı, email, şifre (hash), avatar alanları var.</td></tr>
+        <tr><td><code>JournalEntryEntity.kt</code></td><td>Günlük tablosunu tanımlar. id, userId, tarih, metin, ruh hali, duygu skoru, öneri alanları var.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- DAO -->
+  <div class="section orange">
+    <div class="section-title">🔍 data/local/dao/ — Veritabanı Sorguları</div>
+    <div class="section-subtitle">Veritabanına yazılacak SQL sorgularının Kotlin karşılıkları burada bulunur.</div>
+    <table>
+      <thead><tr><th>Dosya</th><th>Ne İşe Yarıyor?</th></tr></thead>
+      <tbody>
+        <tr><td><code>UserDao.kt</code></td><td>Kullanıcı tablosuna sorgu atar. Kayıt, giriş, avatar güncelleme, şifre değiştirme, silme işlemleri burada.</td></tr>
+        <tr><td><code>JournalDao.kt</code></td><td>Günlük tablosuna sorgu atar. Ekleme, silme, listeleme, skor güncelleme, ortalama hesaplama işlemleri burada.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- DB -->
+  <div class="section orange">
+    <div class="section-title">🏛️ data/local/db/ — Veritabanı Kurulumu</div>
+    <div class="section-subtitle">Room veritabanının ana yapılandırması.</div>
+    <table>
+      <thead><tr><th>Dosya</th><th>Ne İşe Yarıyor?</th></tr></thead>
+      <tbody>
+        <tr><td><code>MindLyricDatabase.kt</code></td><td>Room veritabanının ana sınıfı. Hangi tablolar var, versiyon kaçıncı gibi bilgiler burada. (Şu an v5)</td></tr>
+        <tr><td><code>DbProvider.kt</code></td><td>Veritabanına tek noktadan erişim sağlar. "Singleton" — uygulama boyunca tek bir DB bağlantısı olur.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- UTIL -->
+  <div class="section gray">
+    <div class="section-title">🔧 data/local/util/ — Yardımcı Araçlar</div>
+    <div class="section-subtitle">Güvenlik ve ortak işlemler için kullanılan yardımcı sınıflar.</div>
+    <table>
+      <thead><tr><th>Dosya</th><th>Ne İşe Yarıyor?</th></tr></thead>
+      <tbody>
+        <tr><td><code>HashUtil.kt</code></td><td>Şifreleri SHA-256 algoritmasıyla şifreler. Düz metin şifre hiçbir zaman veritabanına kaydedilmez.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- REPOSITORY -->
+  <div class="section green">
+    <div class="section-title">📦 data/repository/ — İş Mantığı Köprüsü</div>
+    <div class="section-subtitle">ViewModel ile DAO arasındaki iletişimi düzenler.</div>
+    <table>
+      <thead><tr><th>Dosya</th><th>Ne İşe Yarıyor?</th></tr></thead>
+      <tbody>
+        <tr><td><code>UserRepository.kt</code></td><td>ViewModel ile UserDao arasındaki köprü. Kayıt, giriş, avatar, şifre, hesap silme işlemlerini yönetir.</td></tr>
+        <tr><td><code>JournalRepository.kt</code></td><td>ViewModel ile JournalDao arasındaki köprü. Günlük CRUD işlemlerini ve istatistik sorgularını yönetir.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- REMOTE -->
+  <div class="section blue">
+    <div class="section-title">🌐 data/remote/ — İnternet Bağlantısı</div>
+    <div class="section-subtitle">Dış servislerle (Claude AI) iletişimi sağlayan katman.</div>
+    <table>
+      <thead><tr><th>Dosya</th><th>Ne İşe Yarıyor?</th></tr></thead>
+      <tbody>
+        <tr><td><code>ClaudeService.kt</code></td><td>Claude AI API'sine HTTP isteği gönderir. 3 işlev: duygu skoru analizi, kişisel öneri üretme, yarın tahmini.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- LAYOUT -->
+  <div class="section pink">
+    <div class="section-title">📐 res/layout/ — Ekran Tasarımları (XML)</div>
+    <div class="section-subtitle">Kullanıcının gördüğü her ekranın görsel yapısı XML dosyalarında tanımlıdır.</div>
+    <table>
+      <thead><tr><th>Dosya</th><th>Ne İşe Yarıyor?</th></tr></thead>
+      <tbody>
+        <tr><td><code>activity_login.xml</code></td><td>Giriş ekranının görsel tasarımı.</td></tr>
+        <tr><td><code>activity_register.xml</code></td><td>Kayıt ekranının görsel tasarımı.</td></tr>
+        <tr><td><code>activity_main.xml</code></td><td>Ana günlük ekranının görsel tasarımı.</td></tr>
+        <tr><td><code>activity_profile.xml</code></td><td>Profil ekranının görsel tasarımı.</td></tr>
+        <tr><td><code>item_journal_entry.xml</code></td><td>Listedeki her günlük kartının tasarımı.</td></tr>
+        <tr><td><code>dialog_avatar_picker.xml</code></td><td>Avatar seçim dialogunun tasarımı.</td></tr>
+        <tr><td><code>dialog_change_password.xml</code></td><td>Şifre değiştirme dialogunun tasarımı.</td></tr>
+        <tr><td><code>item_avatar.xml</code></td><td>Avatar grid'indeki tek bir avatarın tasarımı.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- VALUES -->
+  <div class="section gray">
+    <div class="section-title">🎨 res/values/ — Sabit Değerler</div>
+    <div class="section-subtitle">Renk, yazı ve tema gibi sabitler tek bir yerde tutulur.</div>
+    <table>
+      <thead><tr><th>Dosya</th><th>Ne İşe Yarıyor?</th></tr></thead>
+      <tbody>
+        <tr><td><code>colors.xml</code></td><td>Uygulamada kullanılan tüm renkler burada tanımlı.</td></tr>
+        <tr><td><code>strings.xml</code></td><td>Uygulamadaki tüm yazılar burada. Türkçe metinler buradan okunur.</td></tr>
+        <tr><td><code>themes.xml</code></td><td>Uygulamanın genel görünüm teması.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- CONFIG -->
+  <div class="section gray">
+    <div class="section-title">⚙️ Proje Ayar Dosyaları</div>
+    <div class="section-subtitle">Uygulamanın derlenmesi ve çalışması için gereken yapılandırma dosyaları.</div>
+    <table>
+      <thead><tr><th>Dosya</th><th>Ne İşe Yarıyor?</th></tr></thead>
+      <tbody>
+        <tr><td><code>app/build.gradle.kts</code></td><td>Uygulama bağımlılıkları (Room, OkHttp, MPAndroidChart vb.) ve derleme ayarları burada.</td></tr>
+        <tr><td><code>AndroidManifest.xml</code></td><td>Uygulamanın tanıtım kartı. Hangi ekranlar var, hangi izinler gerekli (internet gibi) burada yazar.</td></tr>
+        <tr><td><code>local.properties</code></td><td>Gizli ayarlar — Claude API anahtarı burada saklanır. Git'e gönderilmez.</td></tr>
+        <tr><td><code>gradle/libs.versions.toml</code></td><td>Tüm kütüphanelerin versiyon numaraları tek bir yerde yönetilir.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MİMARİ AKIŞ -->
+  <div class="section">
+    <div class="section-title">🔄 Mimari Akış (MVVM)</div>
+    <div class="section-subtitle">Kullanıcının bir butona basmasından veritin veritabanına yazılmasına kadar geçen yol.</div>
+    <div class="flow">
+      Kullanıcı tıklar<br>
+      <span class="arrow">&nbsp;&nbsp;&nbsp;↓</span><br>
+      Activity / Fragment &nbsp;&nbsp;← ekranı gösterir, tıklamaları dinler<br>
+      <span class="arrow">&nbsp;&nbsp;&nbsp;↓</span><br>
+      ViewModel &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← iş mantığını yönetir, DB'yi çağırır<br>
+      <span class="arrow">&nbsp;&nbsp;&nbsp;↓</span><br>
+      Repository &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← DAO ile konuşur, API'yi çağırır<br>
+      <span class="arrow">&nbsp;&nbsp;&nbsp;↓</span><br>
+      Room DAO &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← SQL sorgularını çalıştırır<br>
+      <span class="arrow">&nbsp;&nbsp;&nbsp;↓</span><br>
+      SQLite Veritabanı &nbsp;&nbsp;&nbsp;← telefonda saklanan veri
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

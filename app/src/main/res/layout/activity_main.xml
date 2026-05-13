@@ -1,151 +1,226 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<!-- Ana ekran — login ile aynı renk paleti: üst gradient + alt koyu kart + ellipse yay -->
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:background="@drawable/bg_auth_gradient">
 
-    <!-- Top bar: title + logout -->
+    <!-- Üst bar: başlık + profil avatarı + çıkış butonu -->
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/topBar"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:paddingHorizontal="16dp"
-        android:paddingVertical="12dp">
+        android:paddingHorizontal="20dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="12dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
+        <!-- Uygulama ikonu -->
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/journal"
+            android:scaleType="fitCenter"
+            android:layout_marginEnd="10dp" />
+
+        <!-- Ekran başlığı -->
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/main_title"
-            android:textSize="22sp"
+            android:textColor="#A78BFA"
+            android:textSize="24sp"
             android:textStyle="bold" />
 
-        <!-- Profil butonu — tıklanınca ProfileActivity açılır -->
+        <!-- Profil avatarı -->
         <ImageView
             android:id="@+id/ivProfileAvatar"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:layout_marginEnd="8dp"
-            android:src="@android:drawable/ic_menu_gallery"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/ic_user_profile"
             android:background="@drawable/bg_avatar_circle"
-            android:padding="3dp"
+            android:clipToOutline="true"
+            android:outlineProvider="background"
+            android:padding="0dp"
             android:scaleType="centerCrop"
             android:clickable="true"
             android:focusable="true" />
 
+        <!-- Çıkış butonu -->
         <Button
             android:id="@+id/btnLogout"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/main_logout"
-            android:textColor="@color/brand_primary" />
+            android:textColor="#A78BFA" />
 
     </LinearLayout>
 
-    <!-- Journal entries list -->
+    <!-- Günlük listesi — gradient arka plan üzerinde -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvJournalEntries"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="1"
         android:clipToPadding="false"
-        android:paddingVertical="8dp" />
+        android:paddingVertical="8dp"
+        app:layout_constraintTop_toBottomOf="@id/topBar"
+        app:layout_constraintBottom_toTopOf="@id/writePanel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Write panel pinned to bottom -->
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
+    <!-- İçbükey yay efekti — login ile aynı -->
+
+    <!-- Alt yazma paneli — koyu kart -->
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="35dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ellipse"
+        app:layout_constraintBottom_toTopOf="@id/writePanel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rvJournalEntries"
+        app:layout_constraintVertical_bias="1.0"
+        android:translationY="-16dp"
+        app:tint="@color/auth_bottom_bg" />
+
+    <LinearLayout
+        android:id="@+id/writePanel"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="12dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="4dp">
+        android:orientation="vertical"
+        android:background="@color/auth_bottom_bg"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <LinearLayout
+        <!-- Duygu seçimi chipleri -->
+        <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="12dp">
+            android:scrollbars="none"
+            android:layout_marginBottom="12dp">
 
-            <!-- Mood chips -->
-            <HorizontalScrollView
-                android:layout_width="match_parent"
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupMood"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:scrollbars="none"
-                android:layout_marginBottom="8dp">
+                app:singleSelection="true"
+                app:selectionRequired="false">
 
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/chipGroupMood"
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipHappy"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:singleSelection="true"
-                    app:selectionRequired="false">
+                    android:text="@string/mood_happy"
+                    android:textColor="@color/white"
+                    app:chipBackgroundColor="@color/auth_btn_secondary"
+                    app:chipStrokeColor="@color/auth_btn_primary"
+                    app:chipStrokeWidth="1dp"
+                    app:checkedIconTint="@color/white" />
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipHappy"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/mood_happy" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipSad"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/mood_sad" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipNeutral"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/mood_neutral" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipAngry"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/mood_angry" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipTired"
-                        style="@style/Widget.MaterialComponents.Chip.Choice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/mood_tired" />
-
-                </com.google.android.material.chip.ChipGroup>
-            </HorizontalScrollView>
-
-            <!-- Journal text input -->
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:hint="@string/main_hint_journal">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etJournalText"
-                    android:layout_width="match_parent"
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipSad"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="top"
-                    android:inputType="textMultiLine|textCapSentences"
-                    android:minLines="3"
-                    android:maxLines="6" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:text="@string/mood_sad"
+                    android:textColor="@color/white"
+                    app:chipBackgroundColor="@color/auth_btn_secondary"
+                    app:chipStrokeColor="@color/auth_btn_primary"
+                    app:chipStrokeWidth="1dp"
+                    app:checkedIconTint="@color/white" />
 
-            <Button
-                android:id="@+id/btnSaveEntry"
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipNeutral"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mood_neutral"
+                    android:textColor="@color/white"
+                    app:chipBackgroundColor="@color/auth_btn_secondary"
+                    app:chipStrokeColor="@color/auth_btn_primary"
+                    app:chipStrokeWidth="1dp"
+                    app:checkedIconTint="@color/white" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipAngry"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mood_angry"
+                    android:textColor="@color/white"
+                    app:chipBackgroundColor="@color/auth_btn_secondary"
+                    app:chipStrokeColor="@color/auth_btn_primary"
+                    app:chipStrokeWidth="1dp"
+                    app:checkedIconTint="@color/white" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipTired"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mood_tired"
+                    android:textColor="@color/white"
+                    app:chipBackgroundColor="@color/auth_btn_secondary"
+                    app:chipStrokeColor="@color/auth_btn_primary"
+                    app:chipStrokeWidth="1dp"
+                    app:checkedIconTint="@color/white" />
+
+            </com.google.android.material.chip.ChipGroup>
+        </HorizontalScrollView>
+
+        <!-- Günlük metin girişi -->
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:hint="@string/main_hint_journal"
+            android:textColorHint="@color/auth_text_hint"
+            app:boxStrokeColor="@color/auth_btn_primary"
+            app:hintTextColor="@color/auth_text_hint">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etJournalText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/main_save" />
+                android:textColor="@color/white"
+                android:textColorHint="@color/auth_text_hint"
+                android:gravity="top"
+                android:inputType="textMultiLine|textCapSentences"
+                android:minLines="3"
+                android:maxLines="6" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
+        <!-- Kaydet butonu -->
+        <Button
+            android:id="@+id/btnSaveEntry"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@drawable/bg_btn_auth_primary"
+            android:text="@string/main_save"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:insetTop="0dp"
+            android:insetBottom="0dp" />
 
-</LinearLayout>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

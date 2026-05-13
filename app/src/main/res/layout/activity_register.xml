@@ -1,111 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<!-- Register ekranı — login ile aynı tasarım: üst gradient + alt koyu kart + içbükey yay -->
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/brand_primary"
-    android:orientation="vertical">
+    android:background="@drawable/bg_auth_gradient">
 
-    <!-- Logo / header area -->
+    <!-- Üst alan: ikon + başlık + slogan -->
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/layoutTop"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="1"
         android:gravity="center"
         android:orientation="vertical"
-        android:paddingBottom="16dp">
+        android:paddingBottom="24dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/layoutBottom"
+        app:layout_constraintVertical_weight="1">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="&#128214;"
-            android:textSize="64sp"
-            android:layout_marginBottom="12dp" />
+        <!-- Logo -->
+        <ImageView
+            android:id="@+id/ivLogo"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:src="@drawable/journal"
+            android:layout_marginBottom="10dp"
+            android:scaleType="fitCenter" />
 
+        <!-- Uygulama adı -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/app_name"
-            android:textColor="@color/white"
-            android:textSize="34sp"
+            android:textColor="#A78BFA"
+            android:textSize="32sp"
             android:textStyle="bold" />
 
+        <!-- Slogan -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/register_tagline"
-            android:textColor="@color/white"
+            android:textColor="#A78BFA"
+            android:fontFamily="@font/thondpachem_regular"
             android:textSize="14sp"
-            android:alpha="0.75"
-            android:layout_marginTop="6dp" />
+            android:alpha="0.85"
+            android:layout_marginTop="8dp" />
 
     </LinearLayout>
 
-    <!-- Form card -->
+    <!-- Alt koyu kart -->
     <ScrollView
-        android:layout_width="match_parent"
+        android:id="@+id/layoutBottom"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="2.2"
-        android:background="@drawable/bg_rounded_top"
-        android:fillViewport="true">
+        android:background="@color/auth_bottom_bg"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/layoutTop"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_weight="1.6">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingHorizontal="28dp"
-            android:paddingTop="32dp"
-            android:paddingBottom="24dp">
+            android:paddingHorizontal="32dp"
+            android:paddingTop="24dp"
+            android:paddingBottom="32dp">
 
+            <!-- Alt başlık -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/register_welcome"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+                android:text="Hesap Oluştur"
+                android:textColor="@color/white"
+                android:fontFamily="@font/thondpachem_regular"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="24dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/register_subtitle"
-                android:textSize="14sp"
-                android:textColor="@color/brand_text_secondary"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="28dp" />
-
+            <!-- Kullanıcı adı -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tilUsername"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:hint="@string/register_hint_username">
+                android:layout_marginBottom="14dp"
+                android:hint="@string/register_hint_username"
+                android:textColorHint="@color/auth_text_hint"
+                app:boxStrokeColor="@color/auth_btn_primary"
+                app:hintTextColor="@color/auth_text_hint">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etUsername"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/white"
                     android:autofillHints="username"
                     android:inputType="textPersonName" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- E-posta -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tilEmail"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:hint="@string/login_hint_email">
+                android:layout_marginBottom="14dp"
+                android:hint="@string/login_hint_email"
+                android:textColorHint="@color/auth_text_hint"
+                app:boxStrokeColor="@color/auth_btn_primary"
+                app:hintTextColor="@color/auth_text_hint">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/white"
                     android:autofillHints="emailAddress"
                     android:inputType="textEmailAddress" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- Şifre -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tilPassword"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -113,23 +135,35 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
                 android:hint="@string/register_hint_password"
-                app:endIconMode="password_toggle">
+                android:textColorHint="@color/auth_text_hint"
+                app:boxStrokeColor="@color/auth_btn_primary"
+                app:hintTextColor="@color/auth_text_hint"
+                app:endIconMode="password_toggle"
+                app:endIconTint="@color/white">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/white"
                     android:autofillHints="newPassword"
                     android:inputType="textPassword" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- Kayıt Ol butonu -->
             <Button
                 android:id="@+id/btnRegister"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
+                android:background="@drawable/bg_btn_auth_primary"
                 android:text="@string/register_btn"
-                android:textSize="16sp" />
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:insetTop="0dp"
+                android:insetBottom="0dp" />
 
+            <!-- Yükleniyor spinner -->
             <ProgressBar
                 android:id="@+id/progressRegister"
                 android:layout_width="wrap_content"
@@ -138,31 +172,45 @@
                 android:layout_marginTop="12dp"
                 android:visibility="gone" />
 
+            <!-- Giriş yap linki -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="24dp"
                 android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/register_have_account"
-                    android:textColor="@color/brand_text_secondary"
-                    android:textSize="15sp" />
+                    android:textColor="@color/auth_text_hint"
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/tvGoToLogin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/register_login_link"
-                    android:textColor="@color/brand_primary"
-                    android:textSize="15sp"
+                    android:textColor="@color/auth_btn_primary"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
             </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
 
-</LinearLayout>
+    <!-- İçbükey yay efekti — login ile aynı -->
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="35dp"
+        android:src="@drawable/ellipse"
+        android:scaleType="fitXY"
+        app:tint="@color/auth_bottom_bg"
+        app:layout_constraintBottom_toTopOf="@id/layoutBottom"
+        app:layout_constraintVertical_bias="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layoutTop" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

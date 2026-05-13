@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MindLyric — Neden Claude API?</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f5f3ff;
+    color: #1a1a2e;
+    padding: 40px 20px;
+  }
+  .container { max-width: 860px; margin: 0 auto; }
+
+  /* Başlık */
+  .header {
+    background: linear-gradient(135deg, #1a1a2e, #2D2B55);
+    color: white;
+    border-radius: 16px;
+    padding: 36px 40px;
+    margin-bottom: 32px;
+    text-align: center;
+  }
+  .header h1 { font-size: 30px; letter-spacing: 0.5px; }
+  .header p { margin-top: 10px; opacity: 0.75; font-size: 15px; }
+
+  /* Kart */
+  .card {
+    background: white;
+    border-radius: 14px;
+    padding: 28px 32px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 12px rgba(108,99,255,0.08);
+  }
+  .card-title {
+    font-size: 19px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #1a1a2e;
+  }
+  .card-sub {
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 18px;
+  }
+
+  /* Akış kutusu */
+  .flow-box {
+    background: #f5f3ff;
+    border-left: 4px solid #6C63FF;
+    border-radius: 8px;
+    padding: 16px 20px;
+    font-family: 'Consolas', monospace;
+    font-size: 14px;
+    line-height: 2;
+    color: #4B44CC;
+    margin-bottom: 16px;
+  }
+  .flow-box .arrow { color: #a78bfa; }
+
+  /* Alıntı kutusu */
+  .quote-box {
+    display: flex;
+    gap: 20px;
+    margin: 16px 0;
+  }
+  .quote {
+    flex: 1;
+    border-radius: 10px;
+    padding: 16px 20px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .quote.bad {
+    background: #fef2f2;
+    border-left: 4px solid #ef4444;
+  }
+  .quote.good {
+    background: #f0fdf4;
+    border-left: 4px solid #22c55e;
+  }
+  .quote-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    opacity: 0.6;
+  }
+
+  /* Tablo */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  thead tr { background: #f5f3ff; }
+  th {
+    text-align: left;
+    padding: 10px 14px;
+    font-weight: 600;
+    color: #4B44CC;
+    border-bottom: 2px solid #e9d5ff;
+  }
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #f0eeff;
+    vertical-align: middle;
+  }
+  tr:last-child td { border-bottom: none; }
+  .tick { color: #22c55e; font-size: 16px; }
+  .cross { color: #ef4444; font-size: 16px; }
+  .warn  { color: #f59e0b; font-size: 16px; }
+
+  /* Kullanım kartları */
+  .use-cards { display: flex; flex-direction: column; gap: 16px; }
+  .use-card {
+    border-radius: 12px;
+    padding: 20px 24px;
+    border-left: 5px solid;
+  }
+  .use-card.c1 { background: #eff6ff; border-color: #3b82f6; }
+  .use-card.c2 { background: #f0fdf4; border-color: #22c55e; }
+  .use-card.c3 { background: #fdf4ff; border-color: #a855f7; }
+  .use-card h3 { font-size: 15px; margin-bottom: 8px; color: #1a1a2e; }
+  .use-card p  { font-size: 13px; color: #374151; line-height: 1.6; }
+  .use-card .tag {
+    display: inline-block;
+    background: rgba(0,0,0,0.07);
+    border-radius: 5px;
+    padding: 2px 8px;
+    font-size: 12px;
+    font-family: 'Consolas', monospace;
+    margin-bottom: 8px;
+  }
+  .use-card .example {
+    margin-top: 10px;
+    background: rgba(255,255,255,0.7);
+    border-radius: 7px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: #374151;
+    border-left: 3px solid rgba(0,0,0,0.1);
+  }
+
+  /* Özet çubuklar */
+  .summary-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .summary-list li {
+    background: #f5f3ff;
+    border-radius: 8px;
+    padding: 12px 18px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .summary-list li span.icon { font-size: 18px; }
+
+  /* Teknik akış */
+  .tech-flow {
+    background: #1a1a2e;
+    color: #a78bfa;
+    border-radius: 12px;
+    padding: 24px 32px;
+    font-family: 'Consolas', monospace;
+    font-size: 13px;
+    line-height: 2;
+  }
+  .tech-flow .hl { color: #6C63FF; }
+  .tech-flow .gr { color: #6b7280; font-size: 12px; }
+
+  @media print {
+    body { background: white; padding: 20px; }
+    .card { box-shadow: none; border: 1px solid #e9d5ff; page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Başlık -->
+  <div class="header">
+    <h1>🤖 Neden Claude API Kullandık?</h1>
+    <p>MindLyric projesinde yapay zeka tercihimizin gerekçesi ve kullanım alanları</p>
+  </div>
+
+  <!-- Başlangıçtaki Plan -->
+  <div class="card">
+    <div class="card-title">🔍 Başlangıçtaki Plan: Geleneksel ML Kütüphanesi</div>
+    <p style="font-size:14px; line-height:1.8; margin-bottom:16px;">
+      Projeye başlarken kullanıcıların günlük metinlerini analiz etmek için <strong>yerel bir makine öğrenmesi kütüphanesi</strong> (TensorFlow Lite veya ML Kit gibi) kullanmayı planladık.
+    </p>
+    <div class="flow-box">
+      Kullanıcı günlük yazar <span class="arrow">→</span> Yerel ML modeline gönderilir <span class="arrow">→</span> "Olumlu / Olumsuz" döner <span class="arrow">→</span> Ekrana yansıtılır
+    </div>
+  </div>
+
+  <!-- Sorunlar -->
+  <div class="card">
+    <div class="card-title">❌ Geleneksel Yaklaşımın Sorunları</div>
+    <table>
+      <thead><tr><th>Sorun</th><th>Açıklama</th></tr></thead>
+      <tbody>
+        <tr><td>📦 <strong>Ağır model dosyaları</strong></td><td>TFLite modelleri onlarca MB yer kaplar, uygulamayı şişirir</td></tr>
+        <tr><td>🌐 <strong>Türkçe desteği zayıf</strong></td><td>Hazır modellerin büyük çoğunluğu İngilizce için eğitilmiş</td></tr>
+        <tr><td>🔢 <strong>Sadece etiket üretiyor</strong></td><td>"Olumlu/Olumsuz" ötesine geçemiyor, kişisel mesaj üretemiyor</td></tr>
+        <tr><td>🔧 <strong>Bakım zorluğu</strong></td><td>Modeli güncel tutmak ve yeniden eğitmek ciddi iş yükü gerektirir</td></tr>
+        <tr><td>💬 <strong>Tek yönlü analiz</strong></td><td>Tahmin, öneri, empati gibi bağlam gerektiren görevler yapılamaz</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Fark -->
+  <div class="card">
+    <div class="card-title">✅ Neden Claude API'ye Geçtik?</div>
+    <p style="font-size:14px; color:#6b7280; margin-bottom:16px;">Araştırmalarımız sonucunda Claude API'nin ihtiyaçlarımıza çok daha uygun olduğunu gördük. İşte temel fark:</p>
+    <div class="quote-box">
+      <div class="quote bad">
+        <div class="quote-label">🏚 Geleneksel ML</div>
+        <strong>"Bu metin %78 negatif."</strong>
+      </div>
+      <div class="quote good">
+        <div class="quote-label">🧠 Claude API</div>
+        <strong>"Bugün zorlu bir gün geçirdiğini anlıyorum. Kendine iyi bak — yarın yeni bir gün."</strong>
+      </div>
+    </div>
+    <p style="font-size:13px; color:#374151; line-height:1.7;">
+      Claude; bağlamı anlayan, Türkçe'yi akıcı konuşan ve sadece skor değil <strong>anlamlı bir insan yanıtı</strong> üretebilen büyük bir dil modelidir.
+    </p>
+  </div>
+
+  <!-- 3 Kullanım -->
+  <div class="card">
+    <div class="card-title">🛠️ Projede Claude API Nasıl Kullanıyoruz?</div>
+    <p class="card-sub"><code>ClaudeService.kt</code> dosyasında Claude API'ye 3 farklı amaç için istek gönderiyoruz:</p>
+    <div class="use-cards">
+
+      <div class="use-card c1">
+        <div class="tag">analyzeSentiment()</div>
+        <h3>1️⃣ Duygu Skoru Analizi</h3>
+        <p>Kullanıcının yazdığı günlük metni Claude'a gönderilir. Claude metni okuyup <strong>1–10 arası bir skor</strong> döndürür. Bu skor günlük kartında gösterilir ve grafiklerde kullanılır.</p>
+        <div class="example">
+          Kullanıcı: <em>"Bugün çok yoruldum, her şey ters gitti..."</em><br>
+          Claude → <strong>3</strong> (negatif)
+        </div>
+      </div>
+
+      <div class="use-card c2">
+        <div class="tag">getRecommendation()</div>
+        <h3>2️⃣ Kişisel Öneri Mesajı</h3>
+        <p>Günlük metni ve duygu skoru birlikte Claude'a gönderilir. Claude kullanıcıya <strong>Türkçe, samimi ve kişisel</strong> bir mesaj üretir. Negatif günlerde empati kurar, pozitif günlerde tebrik eder.</p>
+        <div class="example">
+          Skor 2 → <em>"Bugün gerçekten zor geçmiş, bu duyguların geçici olduğunu unutma..."</em><br>
+          Skor 9 → <em>"Harika bir gün geçirmişsin! Bu enerjiyi korumaya devam et."</em>
+        </div>
+      </div>
+
+      <div class="use-card c3">
+        <div class="tag">getMoodPrediction()</div>
+        <h3>3️⃣ Yarın Tahmini</h3>
+        <p>Son 7 günün <strong>ortalama skoru ve günlük sayısı</strong> Claude'a gönderilir. Claude bu trendi analiz ederek kullanıcıya gelecek hakkında gerçekçi ve motive edici bir öngörü sunar.</p>
+        <div class="example">
+          Ortalama 4.2/10 → <em>"Son günlerde dalgalı bir süreçten geçiyorsun. Küçük adımlarla ilerle — önümüzdeki günler daha aydınlık olacak."</em>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Karşılaştırma -->
+  <div class="card">
+    <div class="card-title">📊 Karşılaştırma: ML Kütüphanesi vs Claude API</div>
+    <table>
+      <thead><tr><th>Özellik</th><th style="text-align:center">ML Kütüphanesi</th><th style="text-align:center">Claude API</th></tr></thead>
+      <tbody>
+        <tr><td>Türkçe metin anlama</td><td style="text-align:center"><span class="warn">⚠️ Sınırlı</span></td><td style="text-align:center"><span class="tick">✅ Güçlü</span></td></tr>
+        <tr><td>Duygu skoru üretme</td><td style="text-align:center"><span class="tick">✅ Var</span></td><td style="text-align:center"><span class="tick">✅ Var</span></td></tr>
+        <tr><td>Kişisel mesaj üretme</td><td style="text-align:center"><span class="cross">❌ Yok</span></td><td style="text-align:center"><span class="tick">✅ Var</span></td></tr>
+        <tr><td>Gelecek tahmini</td><td style="text-align:center"><span class="cross">❌ Yok</span></td><td style="text-align:center"><span class="tick">✅ Var</span></td></tr>
+        <tr><td>Uygulama boyutuna etkisi</td><td style="text-align:center"><span class="cross">❌ +30–80 MB</span></td><td style="text-align:center"><span class="tick">✅ Sıfır (API)</span></td></tr>
+        <tr><td>Güncelleme gerektirme</td><td style="text-align:center"><span class="cross">❌ Sürekli</span></td><td style="text-align:center"><span class="tick">✅ Otomatik</span></td></tr>
+        <tr><td>Bağlam anlama</td><td style="text-align:center"><span class="cross">❌ Kelime bazlı</span></td><td style="text-align:center"><span class="tick">✅ Paragraf bazlı</span></td></tr>
+        <tr><td>Entegrasyon kolaylığı</td><td style="text-align:center"><span class="warn">⚠️ Orta</span></td><td style="text-align:center"><span class="tick">✅ Basit HTTP isteği</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Teknik Entegrasyon -->
+  <div class="card">
+    <div class="card-title">🔗 Teknik Entegrasyon</div>
+    <p style="font-size:14px; color:#374151; margin-bottom:16px;">
+      Claude API, uygulamaya <strong>OkHttp</strong> HTTP istemcisi ile entegre edildi. API anahtarı güvenlik için <code>local.properties</code> dosyasında saklanıyor ve <code>BuildConfig</code> üzerinden okunuyor — kaynak koduna gömülmüyor.
+    </p>
+    <div class="tech-flow">
+      <span class="hl">Uygulama (Kotlin)</span><br>
+      &nbsp;&nbsp;&nbsp;<span class="hl">↓</span> <span class="gr">OkHttp ile HTTPS isteği gönderir</span><br>
+      <span class="hl">Anthropic API</span> <span class="gr">(https://api.anthropic.com/v1/messages)</span><br>
+      &nbsp;&nbsp;&nbsp;<span class="hl">↓</span> <span class="gr">JSON yanıt döner</span><br>
+      <span class="hl">ClaudeService.kt</span> <span class="gr">→ parse eder → ViewModel'e iletir</span><br>
+      &nbsp;&nbsp;&nbsp;<span class="hl">↓</span><br>
+      <span class="hl">Kullanıcı</span> <span class="gr">ekranda sonucu görür</span>
+    </div>
+    <p style="font-size:13px; color:#6b7280; margin-top:12px;">Kullanılan model: <strong>claude-opus-4-6</strong></p>
+  </div>
+
+  <!-- Özet -->
+  <div class="card">
+    <div class="card-title">💡 Özet</div>
+    <p style="font-size:14px; color:#374151; margin-bottom:16px;">MindLyric, yapay zeka için Claude API'yi tercih etti çünkü:</p>
+    <ul class="summary-list">
+      <li><span class="icon">🇹🇷</span> Türkçe'yi doğal ve akıcı biçimde anlıyor</li>
+      <li><span class="icon">🧠</span> Sadece sınıflandırmak değil, <strong>anlamak ve yanıt üretmek</strong> için tasarlandı</li>
+      <li><span class="icon">📱</span> Uygulamayı şişirmiyor — model sunucuda çalışıyor</li>
+      <li><span class="icon">🎯</span> Skor + öneri + tahmin gibi 3 farklı görevi tek entegrasyonla karşılıyor</li>
+      <li><span class="icon">❤️</span> Kullanıcıya sayı değil, <strong>empati</strong> sunuyor</li>
+    </ul>
+  </div>
+
+</div>
+</body>
+</html>
