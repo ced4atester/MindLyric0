@@ -19,6 +19,7 @@
         android:theme="@style/Theme.MindLyric0">
 
         <activity android:name=".ui.auth.RegisterActivity" />
+        <activity android:name=".ui.pin.PinActivity" />
         <activity android:name=".ui.profile.ProfileActivity" />
 
         <activity

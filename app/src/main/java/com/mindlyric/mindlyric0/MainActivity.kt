@@ -38,7 +38,11 @@ import com.mindlyric.mindlyric0.ui.journal.JournalViewModel
 import com.mindlyric.mindlyric0.ui.journal.JournalViewModelFactory
 import com.mindlyric.mindlyric0.ui.profile.ProfileActivity
 import android.util.Log
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ProcessLifecycleOwner
 import com.airbnb.lottie.LottieAnimationView
+import com.mindlyric.mindlyric0.ui.pin.PinActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -50,6 +54,15 @@ class MainActivity : AppCompatActivity() {
 
     // Konum izni istek kodu
     private val KONUM_IZIN_KODU = 1001
+
+    // PIN doğrulama istek kodu
+    private val REQ_PIN_CHECK = 4001
+
+    companion object {
+        // Uygulama arka plana gittiğinde false yapılır
+        // ProfileActivity gibi iç ekranlara gidince değişmez
+        var pinDogrulandi = false
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -162,6 +175,15 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        // ---- Uygulama arka plana gittiğinde PIN doğrulamasını sıfırla ----
+        // ProcessLifecycleOwner tüm uygulama arka plana gittiğinde tetiklenir
+        // ProfileActivity'e gidip gelmede tetiklenmez — sadece gerçek arka plan geçişinde
+        ProcessLifecycleOwner.get().lifecycle.addObserver(object : DefaultLifecycleObserver {
+            override fun onStop(owner: LifecycleOwner) {
+                pinDogrulandi = false
+            }
+        })
+
         // ---- Hava durumu widget'ı ----
         // Önce konum iznini kontrol et, yoksa kullanıcıdan iste
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -175,6 +197,33 @@ class MainActivity : AppCompatActivity() {
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 KONUM_IZIN_KODU
             )
+        }
+    }
+
+    // Uygulama arka plandan geri gelince PIN kontrolü yap
+    override fun onStart() {
+        super.onStart()
+        if (PinActivity.isPinAktif(this) && !pinDogrulandi) {
+            startActivityForResult(
+                Intent(this, PinActivity::class.java).apply {
+                    putExtra(PinActivity.EXTRA_MODE, PinActivity.MODE_CHECK)
+                },
+                REQ_PIN_CHECK
+            )
+        }
+    }
+
+    // PIN doğrulama sonucu
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQ_PIN_CHECK) {
+            if (resultCode == RESULT_OK) {
+                // PIN doğrulandı → devam et
+                pinDogrulandi = true
+            } else {
+                // PIN iptal edildi → uygulamayı kapat
+                finishAffinity()
+            }
         }
     }
 

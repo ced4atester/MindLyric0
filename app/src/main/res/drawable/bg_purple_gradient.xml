@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- PIN ekranı arka planı — üstten açık mora, alta doygun mora -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <gradient
+        android:type="linear"
+        android:angle="180"
+        android:startColor="#F5F3FF"
+        android:centerColor="#DDD6FE"
+        android:endColor="#A78BFA" />
+</shape>

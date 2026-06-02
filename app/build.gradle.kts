@@ -73,6 +73,8 @@ dependencies {
     ksp(libs.room.compiler)
     implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.lifecycle.viewmodel.ktx)
+    // ProcessLifecycleOwner — uygulama arka plana gittiğini algılamak için
+    implementation("androidx.lifecycle:lifecycle-process:2.8.7")
     // Claude API ile HTTP isteği yapmak için OkHttp
     implementation(libs.okhttp)
     // Ruh hali trend grafiği için MPAndroidChart

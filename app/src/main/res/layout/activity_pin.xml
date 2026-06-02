@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- PIN giriş ekranı — açık mor/beyaz tema -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/bg_auth_gradient"
+    android:gravity="center_horizontal">
+
+    <!-- Geri butonu (sadece PIN belirleme modunda görünür) -->
+    <TextView
+        android:id="@+id/tvPinBack"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="&#8592; Geri"
+        android:textColor="@color/auth_btn_primary"
+        android:textSize="16sp"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="48dp"
+        android:paddingBottom="8dp"
+        android:visibility="gone" />
+
+    <!-- Üst boşluk -->
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <!-- Başlık -->
+    <TextView
+        android:id="@+id/tvPinTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PIN Giriniz"
+        android:textColor="#2D1B6B"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="12dp" />
+
+    <!-- Alt başlık -->
+    <TextView
+        android:id="@+id/tvPinSubtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Güvenliğiniz için PIN kodunuzu girin"
+        android:textColor="#9E9E9E"
+        android:textSize="14sp"
+        android:layout_marginBottom="52dp" />
+
+    <!-- 6 daireli PIN göstergesi -->
+    <LinearLayout
+        android:id="@+id/pinDotsContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="60dp">
+
+        <View android:id="@+id/dot1"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/bg_pin_dot_empty" />
+
+        <View android:id="@+id/dot2"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/bg_pin_dot_empty" />
+
+        <View android:id="@+id/dot3"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/bg_pin_dot_empty" />
+
+        <View android:id="@+id/dot4"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/bg_pin_dot_empty" />
+
+        <View android:id="@+id/dot5"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/bg_pin_dot_empty" />
+
+        <View android:id="@+id/dot6"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/bg_pin_dot_empty" />
+
+    </LinearLayout>
+
+    <!-- Alt boşluk -->
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <!-- Sayı klavyesi -->
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="3"
+        android:rowCount="4"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginBottom="48dp"
+        android:useDefaultMargins="false">
+
+        <!-- Satır 1: 1 2 3 -->
+        <TextView android:id="@+id/key1" style="@style/PinKeyStyle" android:text="1" />
+        <TextView android:id="@+id/key2" style="@style/PinKeyStyle" android:text="2" />
+        <TextView android:id="@+id/key3" style="@style/PinKeyStyle" android:text="3" />
+
+        <!-- Satır 2: 4 5 6 -->
+        <TextView android:id="@+id/key4" style="@style/PinKeyStyle" android:text="4" />
+        <TextView android:id="@+id/key5" style="@style/PinKeyStyle" android:text="5" />
+        <TextView android:id="@+id/key6" style="@style/PinKeyStyle" android:text="6" />
+
+        <!-- Satır 3: 7 8 9 -->
+        <TextView android:id="@+id/key7" style="@style/PinKeyStyle" android:text="7" />
+        <TextView android:id="@+id/key8" style="@style/PinKeyStyle" android:text="8" />
+        <TextView android:id="@+id/key9" style="@style/PinKeyStyle" android:text="9" />
+
+        <!-- Satır 4: boş | 0 | sil -->
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_columnWeight="1"
+            android:layout_margin="8dp" />
+
+        <TextView android:id="@+id/key0" style="@style/PinKeyStyle" android:text="0" />
+
+        <!-- Silme butonu -->
+        <TextView
+            android:id="@+id/keyDelete"
+            style="@style/PinKeyStyle"
+            android:text="⌫"
+            android:textSize="22sp"
+            android:background="@drawable/bg_pin_key_delete" />
+
+    </GridLayout>
+
+</LinearLayout>

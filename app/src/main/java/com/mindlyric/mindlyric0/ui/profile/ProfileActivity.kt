@@ -24,12 +24,17 @@ import com.mindlyric.mindlyric0.R
 import com.mindlyric.mindlyric0.data.local.db.DbProvider
 import com.mindlyric.mindlyric0.data.repository.JournalRepository
 import com.mindlyric.mindlyric0.data.repository.UserRepository
+import com.google.android.material.switchmaterial.SwitchMaterial
 import com.mindlyric.mindlyric0.ui.auth.LoginActivity
+import com.mindlyric.mindlyric0.ui.pin.PinActivity
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
 class ProfileActivity : AppCompatActivity() {
+
+    // PIN belirleme ekranından dönüş kodu
+    private val REQ_PIN_SET = 2001
 
     private lateinit var viewModel: ProfileViewModel
 
@@ -140,6 +145,28 @@ class ProfileActivity : AppCompatActivity() {
             showChangePasswordDialog()
         }
 
+        // ---- Uygulama kilidi toggle ----
+        val switchPinLock = findViewById<SwitchMaterial>(R.id.switchPinLock)
+
+        // Toggle'ı mevcut PIN durumuna göre ayarla
+        switchPinLock.isChecked = PinActivity.isPinAktif(this)
+
+        switchPinLock.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                // Kullanıcı kilidi açtı → PIN belirleme ekranını aç
+                startActivityForResult(
+                    Intent(this, PinActivity::class.java).apply {
+                        putExtra(PinActivity.EXTRA_MODE, PinActivity.MODE_SET)
+                    },
+                    REQ_PIN_SET
+                )
+            } else {
+                // Kullanıcı kilidi kapattı → PIN'i sil
+                PinActivity.pinSil(this)
+                Toast.makeText(this, "Uygulama kilidi kaldırıldı.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
         // ---- Hesap silme ----
         btnDeleteAccount.setOnClickListener {
             AlertDialog.Builder(this)
@@ -171,6 +198,22 @@ class ProfileActivity : AppCompatActivity() {
                     viewModel.resetState()
                 }
                 else -> { /* Idle ve Loading için bir şey yapma */ }
+            }
+        }
+    }
+
+    // PIN belirleme ekranından dönünce toggle durumunu güncelle
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQ_PIN_SET) {
+            val switchPinLock = findViewById<SwitchMaterial>(R.id.switchPinLock)
+            if (resultCode == RESULT_OK) {
+                // PIN başarıyla belirlendi
+                switchPinLock.isChecked = true
+                Toast.makeText(this, "Uygulama kilidi aktif edildi!", Toast.LENGTH_SHORT).show()
+            } else {
+                // Kullanıcı geri döndü, PIN belirlemedi → toggle'ı geri aç
+                switchPinLock.isChecked = false
             }
         }
     }

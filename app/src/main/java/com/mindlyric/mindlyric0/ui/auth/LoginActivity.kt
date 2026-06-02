@@ -18,13 +18,17 @@ import com.mindlyric.mindlyric0.MainActivity
 import com.mindlyric.mindlyric0.R
 import com.mindlyric.mindlyric0.data.local.db.DbProvider
 import com.mindlyric.mindlyric0.data.repository.UserRepository
+import com.mindlyric.mindlyric0.ui.pin.PinActivity
 
 class LoginActivity : AppCompatActivity() {
 
     companion object {
-        const val PREFS_NAME = "mindlyric_prefs"
+        const val PREFS_NAME  = "mindlyric_prefs"
         const val KEY_USER_ID = "logged_in_user_id"
     }
+
+    // PIN doğrulama ekranından dönüş kodu
+    private val REQ_PIN_CHECK = 3001
 
     private lateinit var viewModel: AuthViewModel
 
@@ -35,7 +39,17 @@ class LoginActivity : AppCompatActivity() {
         val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val savedUserId = prefs.getLong(KEY_USER_ID, -1L)
         if (savedUserId != -1L) {
-            navigateToMain(savedUserId)
+            // Uygulama kilidi aktifse önce PIN ekranına yönlendir
+            if (PinActivity.isPinAktif(this)) {
+                startActivityForResult(
+                    Intent(this, PinActivity::class.java).apply {
+                        putExtra(PinActivity.EXTRA_MODE, PinActivity.MODE_CHECK)
+                    },
+                    REQ_PIN_CHECK
+                )
+            } else {
+                navigateToMain(savedUserId)
+            }
             return
         }
 
@@ -106,7 +120,17 @@ class LoginActivity : AppCompatActivity() {
                     // MainActivity userId'yi SharedPreferences'tan okuduğu için her durumda yazılmalı
                     prefs.edit().putLong(KEY_USER_ID, state.userId).apply()
 
-                    navigateToMain(state.userId)
+                    // PIN aktifse giriş sonrasında da PIN ekranı göster
+                    if (PinActivity.isPinAktif(this)) {
+                        startActivityForResult(
+                            Intent(this, PinActivity::class.java).apply {
+                                putExtra(PinActivity.EXTRA_MODE, PinActivity.MODE_CHECK)
+                            },
+                            REQ_PIN_CHECK
+                        )
+                    } else {
+                        navigateToMain(state.userId)
+                    }
                     viewModel.resetState()
                 }
 
@@ -136,6 +160,23 @@ class LoginActivity : AppCompatActivity() {
                     progressBar.visibility = View.GONE
                     btnLogin.isEnabled = true
                 }
+            }
+        }
+    }
+
+    // PIN doğrulama ekranından dönünce — doğruysa ana ekrana geç, yanlışsa kapat
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQ_PIN_CHECK) {
+            if (resultCode == RESULT_OK) {
+                // PIN doğrulandı → ana ekrana geç
+                MainActivity.pinDogrulandi = true
+                val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+                val savedUserId = prefs.getLong(KEY_USER_ID, -1L)
+                navigateToMain(savedUserId)
+            } else {
+                // PIN iptal edildi — uygulama kapansın
+                finishAffinity()
             }
         }
     }
