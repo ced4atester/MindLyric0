@@ -175,14 +175,67 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
+                <!-- Başlık -->
                 <TextView
+                    android:id="@+id/tvTrendTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Son 7 Gün Duygu Trendi"
                     android:textSize="14sp"
                     android:textStyle="bold"
                     android:textColor="@color/auth_btn_primary"
-                    android:layout_marginBottom="8dp" />
+                    android:layout_marginBottom="12dp" />
+
+                <!-- Segmented chip filtresi -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="@drawable/bg_trend_filter_container"
+                    android:padding="4dp"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:id="@+id/tvFilter7"
+                        android:layout_width="0dp"
+                        android:layout_height="36dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="Son 7 Gün"
+                        android:textSize="12sp"
+                        android:textColor="@color/auth_btn_primary"
+                        android:textStyle="bold"
+                        android:background="@drawable/bg_trend_filter_selected"
+                        android:clickable="true"
+                        android:focusable="true" />
+
+                    <TextView
+                        android:id="@+id/tvFilter30"
+                        android:layout_width="0dp"
+                        android:layout_height="36dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="Son 30 Gün"
+                        android:textSize="12sp"
+                        android:textColor="@color/brand_text_secondary"
+                        android:background="@android:color/transparent"
+                        android:clickable="true"
+                        android:focusable="true" />
+
+                    <TextView
+                        android:id="@+id/tvFilter90"
+                        android:layout_width="0dp"
+                        android:layout_height="36dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="Son 3 Ay"
+                        android:textSize="12sp"
+                        android:textColor="@color/brand_text_secondary"
+                        android:background="@android:color/transparent"
+                        android:clickable="true"
+                        android:focusable="true" />
+
+                </LinearLayout>
 
                 <com.github.mikephil.charting.charts.BarChart
                     android:id="@+id/moodChart"

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Filtre chip bar'ı arka planı — açık mor/gri -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="#F3F0FF" />
+    <corners android:radius="12dp" />
+</shape>

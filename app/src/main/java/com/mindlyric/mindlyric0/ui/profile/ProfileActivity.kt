@@ -112,8 +112,43 @@ class ProfileActivity : AppCompatActivity() {
             tvTopMood.text = mood ?: getString(R.string.profile_no_mood)
         }
 
-        // ---- Trend grafiğini gözlemle ----
-        val moodChart = findViewById<BarChart>(R.id.moodChart)
+        // ---- Trend grafiği + segmented filtre ----
+        val moodChart  = findViewById<BarChart>(R.id.moodChart)
+        val tvTrendTitle = findViewById<TextView>(R.id.tvTrendTitle)
+        val tvFilter7  = findViewById<TextView>(R.id.tvFilter7)
+        val tvFilter30 = findViewById<TextView>(R.id.tvFilter30)
+        val tvFilter90 = findViewById<TextView>(R.id.tvFilter90)
+        val tumFiltreler = listOf(tvFilter7, tvFilter30, tvFilter90)
+
+        // Seçili chip'i vurgula, diğerlerini sıfırla
+        fun filtreUygula(gunSayisi: Int, baslik: String) {
+            tvTrendTitle.text = "$baslik Duygu Trendi"
+
+            // Tüm chip'leri sıfırla
+            tumFiltreler.forEach {
+                it.setBackgroundResource(android.R.color.transparent)
+                it.setTextColor(getColor(R.color.brand_text_secondary))
+                it.typeface = android.graphics.Typeface.DEFAULT
+            }
+
+            // Seçili chip'i vurgula
+            val secili = when (gunSayisi) {
+                7    -> tvFilter7
+                30   -> tvFilter30
+                else -> tvFilter90
+            }
+            secili.setBackgroundResource(R.drawable.bg_trend_filter_selected)
+            secili.setTextColor(getColor(R.color.auth_btn_primary))
+            secili.typeface = android.graphics.Typeface.DEFAULT_BOLD
+
+            viewModel.loadTrend(gunSayisi)
+        }
+
+        tvFilter7.setOnClickListener  { filtreUygula(7,  "Son 7 Gün") }
+        tvFilter30.setOnClickListener { filtreUygula(30, "Son 30 Gün") }
+        tvFilter90.setOnClickListener { filtreUygula(90, "Son 3 Ay") }
+
+        // Grafik verisini gözlemle
         viewModel.trendEntries.observe(this) { entries ->
             setupMoodChart(moodChart, entries.mapNotNull { entry ->
                 val score = entry.sentimentScore ?: return@mapNotNull null

@@ -64,16 +64,17 @@ class ProfileViewModel(
         }
     }
 
-    // Son 7 günün duygu skorlu günlüklerini yükler
-    fun loadTrend() {
+    // Seçilen gün sayısına göre duygu trend verilerini yükler
+    // gunSayisi: 7 → son 7 gün, 30 → son 30 gün, 90 → son 3 ay
+    fun loadTrend(gunSayisi: Int = 7) {
         viewModelScope.launch {
-            val sevenDaysAgo = System.currentTimeMillis() - (7 * 24 * 60 * 60 * 1000L)
-            val entries = journalRepository.getEntriesSince(userId, sevenDaysAgo)
+            val baslangic = System.currentTimeMillis() - (gunSayisi * 24 * 60 * 60 * 1000L)
+            val entries = journalRepository.getEntriesSince(userId, baslangic)
             _trendEntries.value = entries
 
             // Yeterli veri varsa (en az 2 günlük) tahmin üret
             if (entries.size >= 2) {
-                val avgScore = journalRepository.getAverageScore(userId, sevenDaysAgo)
+                val avgScore = journalRepository.getAverageScore(userId, baslangic)
                 if (avgScore != null) {
                     _prediction.value = ClaudeService.getMoodPrediction(avgScore, entries.size)
                 }
