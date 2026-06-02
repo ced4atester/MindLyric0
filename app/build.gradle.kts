@@ -30,6 +30,10 @@ android {
         }
         val apiKey = localProps.getProperty("CLAUDE_API_KEY") ?: ""
         buildConfigField("String", "CLAUDE_API_KEY", "\"$apiKey\"")
+
+        // OpenWeatherMap API anahtarı
+        val weatherApiKey = localProps.getProperty("WEATHER_API_KEY") ?: ""
+        buildConfigField("String", "WEATHER_API_KEY", "\"$weatherApiKey\"")
     }
 
     buildTypes {
@@ -73,4 +77,8 @@ dependencies {
     implementation(libs.okhttp)
     // Ruh hali trend grafiği için MPAndroidChart
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+    // Kullanıcının konumunu almak için Google Play Services Location
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+    // Hava durumu widget animasyonları için Lottie
+    implementation("com.airbnb.android:lottie:6.4.0")
 }

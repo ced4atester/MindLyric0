@@ -65,6 +65,67 @@
 
     </LinearLayout>
 
+    <!-- Hava durumu widget'ı — topBar'ın hemen altında, günlüklerin üstünde -->
+    <LinearLayout
+        android:id="@+id/weatherWidget"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="10dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/topBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Hava durumu Lottie animasyon ikonu -->
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottieWeatherIcon"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="10dp"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true" />
+
+        <!-- Şehir adı ve açıklama -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvWeatherCity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Konum alınıyor..."
+                android:textColor="#A78BFA"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvWeatherDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#C4B5FD"
+                android:textSize="11sp" />
+
+        </LinearLayout>
+
+        <!-- Sıcaklık -->
+        <TextView
+            android:id="@+id/tvWeatherTemp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#A78BFA"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
     <!-- Günlük listesi — gradient arka plan üzerinde -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvJournalEntries"
@@ -72,7 +133,7 @@
         android:layout_height="0dp"
         android:clipToPadding="false"
         android:paddingVertical="8dp"
-        app:layout_constraintTop_toBottomOf="@id/topBar"
+        app:layout_constraintTop_toBottomOf="@id/weatherWidget"
         app:layout_constraintBottom_toTopOf="@id/writePanel"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

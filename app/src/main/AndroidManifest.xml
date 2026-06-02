@@ -4,6 +4,9 @@
 
     <!-- Claude API'ye istek gönderebilmek için internet izni gerekli -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Kullanıcının konumuna göre hava durumu çekebilmek için konum izinleri -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
